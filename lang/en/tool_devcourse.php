@@ -37,3 +37,8 @@ $string['timemodified'] = 'Time modified';
 // Capabilities.
 $string['devcourse:edit'] = 'Edit Dev Course data';
 $string['devcourse:view'] = 'View Dev Course data';
+
+// Form strings.
+$string['editentry'] = 'Edit entry';
+$string['errornameexists'] = 'Name must be unique in this course';
+$string['newentry'] = 'New entry';

@@ -59,23 +59,34 @@ class tool_devcourse_table extends table_sql {
 
         parent::__construct($uniqueid);
 
-        $this->define_columns(array('name', 'completed', 'priority', 'timecreated', 'timemodified'));
-        $this->define_headers(array(
+        // Set the table's unique identifier and course ID.
+        $columns = ['name', 'completed', 'priority', 'timecreated', 'timemodified'];
+        $headers = [
             get_string('name', $this->pluginname),
             get_string('completed', $this->pluginname),
             get_string('priority', $this->pluginname),
             get_string('timecreated', $this->pluginname),
             get_string('timemodified', $this->pluginname),
-        ));
+        ];
+
+        // Set the context for the table.
+        $this->context = context_course::instance($courseid);
+        if (has_capability('tool/devcourse:edit', $this->context)) {
+            $columns[] = 'edit';
+            $headers[] = '';
+        }
+
+        // Define the columns and headers for the table.
+        $this->define_columns($columns);
+        $this->define_headers($headers);
         $this->pageable(true);
         $this->collapsible(false);
         $this->sortable(false);
         $this->is_downloadable(false);
-
         $this->define_baseurl($PAGE->url);
 
-        $this->context = context_course::instance($courseid);
-        $this->set_sql('name, completed, priority, timecreated, timemodified',
+        // Set the SQL query for the table.
+        $this->set_sql('id, name, completed, priority, timecreated, timemodified',
             '{tool_devcourse}', 'courseid = ?', [$courseid]);
     }
 
@@ -133,5 +144,16 @@ class tool_devcourse_table extends table_sql {
      */
     protected function col_timemodified($row) {
         return userdate($row->timemodified, get_string('strftimedatetime'));
+    }
+
+    /**
+     * Generates the content for the 'edit' column in the table.
+     *
+     * @param object $row The data object representing the current row in the table.
+     * @return string The HTML content to display in the 'edit' column.
+     */
+    protected function col_edit($row) {
+        $url = new moodle_url('/admin/tool/devcourse/edit.php', ['id' => $row->id]);
+        return html_writer::link($url, get_string('edit'));
     }
 }
