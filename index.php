@@ -26,6 +26,8 @@ require_once(__DIR__ . '/../../../config.php');
 
 use moodle_url;
 
+$courseid = optional_param('id', 0, PARAM_INT);
+
 $url = new moodle_url('/admin/tool/devcourse/index.php');
 
 $PAGE->set_context(context_system::instance());
@@ -34,4 +36,7 @@ $PAGE->set_pagelayout('report');
 $PAGE->set_title(get_string('helloworld', 'tool_devcourse'));
 $PAGE->set_heading(get_string('pluginname', 'tool_devcourse'));
 
-echo get_string('helloworld', 'tool_devcourse');
+echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('helloworld', 'tool_devcourse'));
+echo html_writer::div(get_string('youareviewing', 'tool_devcourse', $courseid));
+echo $OUTPUT->footer();
