@@ -59,6 +59,8 @@ class tool_devcourse_table extends table_sql {
 
         parent::__construct($uniqueid);
 
+        $this->set_attribute('id', 'tool_devcourse_overview');
+
         // Set the table's unique identifier and course ID.
         $columns = ['name', 'completed', 'priority', 'timecreated', 'timemodified'];
         $headers = [

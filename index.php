@@ -56,7 +56,7 @@ echo html_writer::div(format_string($course->fullname));
 
 // Display table.
 $table = new tool_devcourse_table($pluginname, $courseid);
-$table->out(0, false);
+$table->out(20, false);
 
 // Link to add a new entry.
 if (has_capability('tool/devcourse:edit', $context)) {
