@@ -33,11 +33,14 @@ defined('MOODLE_INTERNAL') || die();
  * @return void|null return null if we don't want to display the node.
  */
 function tool_devcourse_extend_navigation_course($navigation, $course, $context) {
-    $navigation->add(
-        get_string('pluginname', 'tool_devcourse'),
-        new moodle_url('/admin/tool/devcourse/index.php', ['id' => $course->id]),
-        navigation_node::TYPE_SETTING,
-        get_string('pluginname', 'tool_devcourse'),
-        'devcourse',
-        new pix_icon('icon', '', 'tool_devcourse'));
+    $pluginname = 'tool_devcourse';
+    if (has_capability('tool/devcourse:view', $context)) {
+        $navigation->add(
+            get_string('pluginname', $pluginname),
+            new moodle_url('/admin/tool/devcourse/index.php', ['id' => $course->id]),
+            navigation_node::TYPE_SETTING,
+            get_string('pluginname', $pluginname),
+            'devcourse',
+            new pix_icon('icon', '', $pluginname));
+    }
 }

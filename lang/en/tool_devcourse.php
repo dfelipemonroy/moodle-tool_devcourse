@@ -33,3 +33,7 @@ $string['name'] = 'Name';
 $string['priority'] = 'Priority';
 $string['timecreated'] = 'Time created';
 $string['timemodified'] = 'Time modified';
+
+// Capabilities.
+$string['devcourse:edit'] = 'Edit Dev Course data';
+$string['devcourse:view'] = 'View Dev Course data';

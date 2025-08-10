@@ -29,9 +29,11 @@ $courseid = required_param('id', PARAM_INT);
 $url = new moodle_url('/admin/tool/devcourse/index.php', ['id' => $courseid]);
 $pluginname = 'tool_devcourse';
 
-$PAGE->set_context(context_system::instance());
+require_login($courseid);
+$context = context_course::instance($courseid);
+require_capability('tool/devcourse:view', $context);
+
 $PAGE->set_url($url);
-$PAGE->set_pagelayout('report');
 $PAGE->set_title(get_string('helloworld', $pluginname));
 $PAGE->set_heading(get_string('pluginname', $pluginname));
 
