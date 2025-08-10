@@ -22,25 +22,27 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use moodle_url;
-use context_system;
-use html_writer;
-
 require_once(__DIR__ . '/../../../config.php');
 
 $courseid = required_param('id', PARAM_INT);
 
 $url = new moodle_url('/admin/tool/devcourse/index.php', ['id' => $courseid]);
+$pluginname = 'tool_devcourse';
 
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
-$PAGE->set_title(get_string('helloworld', 'tool_devcourse'));
-$PAGE->set_heading(get_string('pluginname', 'tool_devcourse'));
+$PAGE->set_title(get_string('helloworld', $pluginname));
+$PAGE->set_heading(get_string('pluginname', $pluginname));
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('helloworld', 'tool_devcourse'));
-echo html_writer::div(get_string('youareviewing', 'tool_devcourse', $courseid));
+echo $OUTPUT->heading(get_string('helloworld', $pluginname));
+echo html_writer::div(get_string('youareviewing', $pluginname, $courseid));
 $course = $DB->get_record_sql("SELECT shortname, fullname FROM {course} WHERE id = ?", [$courseid]);
 echo html_writer::div(format_string($course->fullname));
+
+// Display table.
+$table = new tool_devcourse_table('tool_devcourse', $courseid);
+$table->out(0, false);
+
 echo $OUTPUT->footer();

@@ -24,6 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+// General strings.
 $string['pluginname'] = 'Admin Tool Moodle Dev Course';
 $string['helloworld'] = 'Hello world!';
 $string['youareviewing'] = 'You are viewing course {$a}';
+$string['completed'] = 'Completed';
+$string['name'] = 'Name';
+$string['priority'] = 'Priority';
+$string['timecreated'] = 'Time created';
+$string['timemodified'] = 'Time modified';

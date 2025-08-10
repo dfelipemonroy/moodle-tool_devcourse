@@ -67,5 +67,20 @@ function xmldb_tool_devcourse_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025080705, 'tool', 'devcourse');
     }
 
+    if ($oldversion < 2025080706) {
+
+        // Define index courseidname (unique) to be added to tool_devcourse.
+        $table = new xmldb_table($pluginname);
+        $index = new xmldb_index('courseidname', XMLDB_INDEX_UNIQUE, ['courseid', 'name']);
+
+        // Conditionally launch add index courseidname.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Devcourse savepoint reached.
+        upgrade_plugin_savepoint(true, 2025080706, 'tool', 'devcourse');
+    }
+
     return true;
 }
