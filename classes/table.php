@@ -154,6 +154,11 @@ class tool_devcourse_table extends table_sql {
      */
     protected function col_edit($row) {
         $url = new moodle_url('/admin/tool/devcourse/edit.php', ['id' => $row->id]);
-        return html_writer::link($url, get_string('edit'));
+        $deleteurl = new moodle_url('/admin/tool/devcourse/index.php',
+            ['delete' => $row->id, 'id' => $this->context->instanceid,
+                'sesskey' => sesskey()]);
+
+        return html_writer::link($url, get_string('edit')) . '<br>' .
+            html_writer::link($deleteurl, get_string('delete'));
     }
 }

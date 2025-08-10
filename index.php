@@ -37,6 +37,17 @@ $PAGE->set_url($url);
 $PAGE->set_title(get_string('helloworld', $pluginname));
 $PAGE->set_heading(get_string('pluginname', $pluginname));
 
+// Delete entry if requested.
+if ($deleteid = optional_param('delete', null, PARAM_INT)) {
+    require_sesskey();
+    $record = $DB->get_record($pluginname,
+        ['id' => $deleteid, 'courseid' => $courseid], '*', MUST_EXIST);
+    require_capability('tool/devcourse:edit', $PAGE->context);
+    $DB->delete_records($pluginname, ['id' => $deleteid]);
+
+    redirect(new moodle_url('/admin/tool/devcourse/index.php', ['id' => $courseid]));
+}
+
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('helloworld', $pluginname));
 echo html_writer::div(get_string('youareviewing', $pluginname, $courseid));
@@ -44,7 +55,7 @@ $course = $DB->get_record_sql("SELECT shortname, fullname FROM {course} WHERE id
 echo html_writer::div(format_string($course->fullname));
 
 // Display table.
-$table = new tool_devcourse_table('tool_devcourse', $courseid);
+$table = new tool_devcourse_table($pluginname, $courseid);
 $table->out(0, false);
 
 // Link to add a new entry.
