@@ -15,17 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Example page for the Dev Course tool.
  *
  * @package    tool_devcourse
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . '/../../../config.php');
 
-$plugin->version   = 2025080701;
-$plugin->requires  = 2018050800;
-$plugin->release   = 'v1.1';
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->component = 'tool_devcourse';
+use moodle_url;
+
+$url = new moodle_url('/admin/tool/devcourse/index.php');
+
+$PAGE->set_context(context_system::instance());
+$PAGE->set_url($url);
+$PAGE->set_pagelayout('report');
+$PAGE->set_title(get_string('helloworld', 'tool_devcourse'));
+$PAGE->set_heading(get_string('pluginname', 'tool_devcourse'));
+
+echo get_string('helloworld', 'tool_devcourse');
