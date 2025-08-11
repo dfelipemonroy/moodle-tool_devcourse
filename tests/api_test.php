@@ -1,0 +1,106 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * API tests for the tool_devcourse plugin.
+ *
+ * @package    tool_devcourse
+ * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * API tests class for the tool_devcourse plugin.
+ *
+ * @package    tool_devcourse
+ * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class api_test extends advanced_testcase {
+
+    /**
+     * Sets up the environment before each test.
+     *
+     * This method is called before each test is executed. It can be used to initialize
+     * objects, set up database fixtures, or perform any other setup required for the tests.
+     *
+     * @return void
+     */
+    protected function setUp(): void {
+        $this->resetAfterTest();
+    }
+
+    /**
+     * Tests the insert functionality of the API.
+     *
+     * This test verifies that the insert operation behaves as expected,
+     * ensuring that data is correctly added to the system.
+     */
+    public function test_insert() {
+        $course = $this->getDataGenerator()->create_course();
+        $entryid = tool_devcourse_api::insert((object)[
+            'courseid' => $course->id,
+            'name' => 'testname1',
+            'completed' => 1,
+            'priority' => 0
+        ]);
+        $entry = tool_devcourse_api::retrieve($entryid);
+        $this->assertEquals($course->id, $entry->courseid);
+        $this->assertEquals('testname1', $entry->name);
+    }
+
+    /**
+     * Tests the update functionality of the API.
+     *
+     * This test verifies that the update operation performs as expected,
+     * ensuring that the relevant data is correctly modified and any side
+     * effects are handled appropriately.
+     */
+    public function test_update() {
+        $course = $this->getDataGenerator()->create_course();
+        $entryid = tool_devcourse_api::insert((object)[
+            'courseid' => $course->id,
+            'name' => 'testname1'
+        ]);
+        tool_devcourse_api::update((object)[
+            'id' => $entryid,
+            'name' => 'testname2'
+        ]);
+        $entry = tool_devcourse_api::retrieve($entryid);
+        $this->assertEquals($course->id, $entry->courseid);
+        $this->assertEquals('testname2', $entry->name);
+    }
+
+    /**
+     * Tests the delete functionality of the API.
+     *
+     * This test verifies that the delete operation works as expected,
+     * ensuring that the relevant data is properly removed and any
+     * necessary cleanup is performed.
+     */
+    public function test_delete() {
+        $course = $this->getDataGenerator()->create_course();
+        $entryid = tool_devcourse_api::insert((object)[
+            'courseid' => $course->id,
+            'name' => 'testname1'
+        ]);
+        tool_devcourse_api::delete($entryid);
+        $entry = tool_devcourse_api::retrieve($entryid, 0, IGNORE_MISSING);
+        $this->assertEmpty($entry);
+    }
+}
