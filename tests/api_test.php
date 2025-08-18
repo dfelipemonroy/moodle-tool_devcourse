@@ -53,15 +53,17 @@ class api_test extends advanced_testcase {
      */
     public function test_insert() {
         $course = $this->getDataGenerator()->create_course();
-        $entryid = tool_devcourse_api::insert((object)[
+        $entryid = tool_devcourse_api::insert((object) [
             'courseid' => $course->id,
             'name' => 'testname1',
             'completed' => 1,
-            'priority' => 0
+            'priority' => 0,
+            'description' => 'description plain',
         ]);
         $entry = tool_devcourse_api::retrieve($entryid);
         $this->assertEquals($course->id, $entry->courseid);
         $this->assertEquals('testname1', $entry->name);
+        $this->assertEquals('description plain', $entry->description);
     }
 
     /**
@@ -73,17 +75,19 @@ class api_test extends advanced_testcase {
      */
     public function test_update() {
         $course = $this->getDataGenerator()->create_course();
-        $entryid = tool_devcourse_api::insert((object)[
+        $entryid = tool_devcourse_api::insert((object) [
             'courseid' => $course->id,
-            'name' => 'testname1'
+            'name' => 'testname1',
         ]);
-        tool_devcourse_api::update((object)[
+        tool_devcourse_api::update((object) [
             'id' => $entryid,
-            'name' => 'testname2'
+            'name' => 'testname2',
+            'description' => 'description updated',
         ]);
         $entry = tool_devcourse_api::retrieve($entryid);
         $this->assertEquals($course->id, $entry->courseid);
         $this->assertEquals('testname2', $entry->name);
+        $this->assertEquals('description updated', $entry->description);
     }
 
     /**
@@ -102,5 +106,44 @@ class api_test extends advanced_testcase {
         tool_devcourse_api::delete($entryid);
         $entry = tool_devcourse_api::retrieve($entryid, 0, IGNORE_MISSING);
         $this->assertEmpty($entry);
+    }
+
+    /**
+     * Tests the functionality of the description editor API.
+     *
+     * This test verifies that the description editor behaves as expected,
+     * ensuring that the API processes and returns the correct data.
+     *
+     * @covers ::description_editor
+     */
+    public function test_description_editor() {
+        $this->setAdminUser();
+
+        $course = $this->getDataGenerator()->create_course();
+        $entryid = tool_devcourse_api::insert((object)[
+            'courseid' => $course->id,
+            'name' => 'testname1',
+            'description_editor' => [
+                'text' => 'description formatted',
+                'format' => FORMAT_HTML,
+                'itemid' => file_get_unused_draft_itemid(),
+            ],
+        ]);
+        $entry = tool_devcourse_api::retrieve($entryid);
+        $this->assertEquals('description formatted', $entry->description);
+        tool_devcourse_api::update((object) [
+            'id' => $entryid,
+            'name' => 'testname2',
+            'description_editor' => [
+                'text' => 'description edited',
+                'format' => FORMAT_HTML,
+                'itemid' => file_get_unused_draft_itemid(),
+            ],
+        ]);
+        $entry = tool_devcourse_api::retrieve($entryid);
+        $this->assertEquals($course->id, $entry->courseid);
+        $this->assertEquals('testname2', $entry->name);
+        $this->assertEquals('description edited', $entry->description);
+
     }
 }

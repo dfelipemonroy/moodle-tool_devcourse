@@ -54,6 +54,17 @@ $PAGE->set_heading(get_string('pluginname', $pluginname));
 
 // Load the form class.
 $form = new tool_devcourse_form();
+if (!empty($entry->id)) {
+    file_prepare_standard_editor(
+        $entry,
+        'description',
+        tool_devcourse_api::editor_options($courseid),
+        $PAGE->context,
+        $pluginname,
+        'entry',
+        $entry->id
+    );
+}
 $form->set_data($entry);
 
 $returnurl = new moodle_url('/admin/tool/devcourse/index.php', ['id' => $courseid]);

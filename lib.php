@@ -44,3 +44,52 @@ function tool_devcourse_extend_navigation_course($navigation, $course, $context)
             new pix_icon('icon', '', $pluginname));
     }
 }
+
+/**
+ * Handles file serving for the devcourse plugin.
+ *
+ * This function is used to serve files associated with the devcourse plugin in Moodle.
+ *
+ * @param stdClass $course The course object.
+ * @param stdClass $cm The course module object.
+ * @param context $context The context of the file.
+ * @param string $filearea The file area.
+ * @param array $args Additional arguments for the file.
+ * @param bool $forcedownload Whether or not to force download.
+ * @param array $options Additional options affecting file serving.
+ * @return void|bool Outputs file content or sends appropriate headers, or false if not found.
+ */
+function tool_devcourse_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, $options = []) {
+    $pluginname = 'tool_devcourse';
+    if ($context->contextlevel != CONTEXT_COURSE) {
+        return false;
+    }
+
+    if ($filearea !== 'entry') {
+        return false;
+    }
+
+    require_login($course);
+    require_capability('tool/devcourse:view', $context);
+
+    $itemid = array_shift($args);
+
+    $entry = tool_devcourse_api::retrieve($itemid);
+
+    $filename = array_pop($args);
+
+    if (!$args) {
+        $filepath = '/';
+    } else {
+        $filepath = '/'.implode('/', $args).'/';
+    }
+
+    $fs = get_file_storage();
+    $file = $fs->get_file($context->id, $pluginname, $filearea, $itemid, $filepath, $filename);
+
+    if (empty($file)) {
+        return false;
+    }
+
+    send_stored_file($file, null, 0, $forcedownload, $options);
+}

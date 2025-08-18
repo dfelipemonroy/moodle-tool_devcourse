@@ -21,19 +21,20 @@ Feature: Creating, editing and deleting entries.
         And I navigate to "Dev course example" in current page administration
         And I follow "New entry"
         And I set the following fields to these values:
-            | Name      | test entry 1 |
-            | Completed | 0            |
+            | Name        | test entry 1 |
+            | Completed   | 0            |
+            | Description | cat          |
         And I press "Save changes"
         Then the following should exist in the "tool_devcourse_overview" table:
-            | Name         | Completed |
-            | test entry 1 | No        |
+            | Name         | Completed | Description |
+            | test entry 1 | No        | cat         |
         And I click on "Edit" "link" in the "test entry 1" "table_row"
         And I set the following fields to these values:
             | Completed | 1            |
         And I press "Save changes"
         And the following should exist in the "tool_devcourse_overview" table:
-            | Name         | Completed |
-            | test entry 1 | Yes       |
+            | Name         | Description | Completed |
+            | test entry 1 | cat         | Yes       |
         And I log out
 
     Scenario: Delete an entry.

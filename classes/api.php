@@ -43,6 +43,13 @@ class tool_devcourse_api {
     protected static $table = 'tool_devcourse';
 
     /**
+     * The name of the plugin.
+     *
+     * @var string
+     */
+    protected static $pluginname = 'tool_devcourse';
+
+    /**
      * Retrieve an entry
      *
      * @param int $id id of the entry
@@ -66,13 +73,24 @@ class tool_devcourse_api {
      * @param stdClass $data
      */
     public static function update(stdClass $data) {
-        global $DB;
+        global $DB, $PAGE;
+
         if (empty($data->id)) {
-            throw new coding_exception('Object data must contain property id');
+            throw new \coding_exception('Object data must contain property id');
         }
-        // Only fields name, completed, priority can be modified.
-        $updatedata = array_intersect_key((array)$data,
-            ['id' => 1, 'name' => 1, 'completed' => 1, 'priority' => 1]);
+
+        if (isset($data->description_editor)) {
+            $data = file_postupdate_standard_editor($data, 'description',
+                self::editor_options(), $PAGE->context, self::$pluginname, 'entry', $data->id);
+        }
+        $updatedata = array_intersect_key((array) $data, [
+            'id' => 1,
+            'name' => 1,
+            'completed' => 1,
+            'priority' => 1,
+            'description' => 1,
+            'descriptionformat' => 1,
+        ]);
         $updatedata['timemodified'] = time();
         $DB->update_record(self::$table, $updatedata);
     }
@@ -87,21 +105,61 @@ class tool_devcourse_api {
     public static function insert(stdClass $data) : int {
         global $DB;
         if (empty($data->courseid)) {
-            throw new coding_exception('Object data must contain property courseid');
+            throw new \coding_exception('Object data must contain property courseid');
         }
-        $insertdata = array_intersect_key((array)$data,
-            ['courseid' => 1, 'name' => 1, 'completed' => 1, 'priority' => 1]);
-        $insertdata['timemodified'] = $insertdata['timecreated'] = time();
-        return $DB->insert_record(self::$table, $insertdata);
+
+        $now = time();
+        $insertdata = array_intersect_key((array) $data, [
+            'courseid' => 1,
+            'name' => 1,
+            'completed' => 1,
+            'priority' => 1,
+            'timemodified' => $now,
+            'timecreated' => $now,
+        ]);
+
+        $entryid = $DB->insert_record(self::$table, $insertdata);
+        if (isset($data->description_editor)) {
+            $context = \context_course::instance($data->courseid);
+            $data = file_postupdate_standard_editor($data, 'description',
+                self::editor_options(), $context, self::$pluginname, 'entry', $entryid);
+            $updatedata = [
+                'id' => $entryid,
+                'description' => $data->description,
+                'descriptionformat' => $data->descriptionformat,
+            ];
+            $DB->update_record(self::$table, $updatedata);
+        }
+
+        return $entryid;
     }
 
     /**
      * Delete an entry.
      *
-     * @param int $id
+     * @param int $id id of the entry to delete.
      */
     public static function delete(int $id) {
         global $DB;
         $DB->delete_records(self::$table, ['id' => $id]);
     }
+
+    /**
+     * Returns the configuration options for the editor.
+     *
+     * This static method provides an array of options that can be used to configure
+     * the editor instance within the application. The returned options may include
+     * settings such as toolbar configuration, plugins, and other editor preferences.
+     *
+     * @return array The array of editor configuration options.
+     */
+    public static function editor_options() {
+        global $PAGE;
+
+        return [
+            'context' => $PAGE->context,
+            'noclean' => true,
+        ];
+    }
+
 }

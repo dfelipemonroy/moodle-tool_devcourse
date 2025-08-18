@@ -62,9 +62,10 @@ class tool_devcourse_table extends table_sql {
         $this->set_attribute('id', 'tool_devcourse_overview');
 
         // Set the table's unique identifier and course ID.
-        $columns = ['name', 'completed', 'priority', 'timecreated', 'timemodified'];
+        $columns = ['name', 'description', 'completed', 'priority', 'timecreated', 'timemodified'];
         $headers = [
             get_string('name', $this->pluginname),
+            get_string('description', $this->pluginname),
             get_string('completed', $this->pluginname),
             get_string('priority', $this->pluginname),
             get_string('timecreated', $this->pluginname),
@@ -88,8 +89,13 @@ class tool_devcourse_table extends table_sql {
         $this->define_baseurl($PAGE->url);
 
         // Set the SQL query for the table.
-        $this->set_sql('id, name, completed, priority, timecreated, timemodified',
-            '{tool_devcourse}', 'courseid = ?', [$courseid]);
+        $fields = 'id, name, description, descriptionformat, completed, priority, timecreated, timemodified';
+        $this->set_sql(
+            $fields,
+            '{tool_devcourse}',
+            'courseid = ?',
+            [$courseid]
+        );
     }
 
     /**
@@ -124,6 +130,28 @@ class tool_devcourse_table extends table_sql {
     protected function col_name($row) {
         return format_string($row->name, true,
             ['context' => $this->context]);
+    }
+
+    /**
+     * Returns the formatted description column for the given row.
+     *
+     * @param object $row The data object representing a row in the table.
+     *
+     * @return string The HTML-formatted description for display in the table.
+     */
+    protected function col_description($row) {
+        global $PAGE;
+
+        $options = tool_devcourse_api::editor_options();
+        $description = file_rewrite_pluginfile_urls(
+            $row->description,
+            'pluginfile.php',
+            $PAGE->context->id,
+            $this->pluginname,
+            'entry',
+            $row->id
+        );
+        return format_text($description, $row->descriptionformat, $options);
     }
 
     /**

@@ -82,5 +82,28 @@ function xmldb_tool_devcourse_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025080706, 'tool', 'devcourse');
     }
 
+    if ($oldversion < 2025081200) {
+
+        // Define field description to be added to tool_devcourse.
+        $table = new xmldb_table($pluginname);
+        $field = new xmldb_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null, 'priority');
+
+        // Conditionally launch add field description.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field descriptionformat to be added to tool_devcourse.
+        $field = new xmldb_field('descriptionformat', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'description');
+
+        // Conditionally launch add field descriptionformat.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Devcourse savepoint reached.
+        upgrade_plugin_savepoint(true, 2025081200, 'tool', 'devcourse');
+    }
+
     return true;
 }

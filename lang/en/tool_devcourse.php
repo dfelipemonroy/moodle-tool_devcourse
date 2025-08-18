@@ -30,6 +30,7 @@ $string['helloworld'] = 'Hello world!';
 $string['youareviewing'] = 'You are viewing course {$a}';
 $string['completed'] = 'Completed';
 $string['name'] = 'Name';
+$string['description'] = 'Description';
 $string['priority'] = 'Priority';
 $string['timecreated'] = 'Time created';
 $string['timemodified'] = 'Time modified';
