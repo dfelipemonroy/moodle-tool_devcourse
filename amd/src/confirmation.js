@@ -33,7 +33,7 @@ export const confirmDeletion = (url) => {
 
     str.get_strings([
         {key: 'delete'},
-        {key: 'confirmdeletion', component: pluginname},
+        {key: 'confirmdeleteentry', component: pluginname},
         {key: 'yes'},
         {key: 'no'}
     ])

@@ -32,7 +32,7 @@
 <p>{{#str}} youareviewing , tool_devcourse , {{courseid}} {{/str}}</p>
 <p>{{{coursename}}}</p>
 
-{{{entriestable}}}
+{{{contents}}}
 
 {{#addlink}}
     <a href="{{{.}}}">
@@ -41,14 +41,9 @@
 {{/addlink}}
 
 {{#js}}
-    require(
-    [
-    'tool_devcourse/confirm'
-    ],
-    function(
-    c
-    ) {
-    c.init('[data-action=deleteentry]');
+    require([
+        'tool_devcourse/confirmation'
+    ], function(c) {
+        c.init('[data-action=deleteentry]');
     });
-
 {{/js}}
