@@ -34,11 +34,9 @@ import * as templates from 'core/templates';
  * @param {Array} entriesList - The list of entries to update after deletion.
  */
 export const confirmDeletion = (id, entriesList) => {
-    let pluginname = 'tool_devcourse';
-
     str.get_strings([
         {key: 'delete'},
-        {key: 'confirmdeleteentry', component: pluginname},
+        {key: 'confirmdeleteentry', component: 'tool_devcourse'},
         {key: 'yes'},
         {key: 'no'}
     ])
@@ -54,55 +52,49 @@ export const confirmDeletion = (id, entriesList) => {
 };
 
 /**
- * Calls the services to delete the entry and retrieve the entries list
+ * Deletes an entry by its ID and reloads the list of entries for a given course.
  *
- * @method processDeleteEntry
- * @param {Number} id
- * @param {Object} entriesList
+ * @param {number|string} id - The ID of the entry to delete.
+ * @param {HTMLElement} list - The DOM element representing the list, which must have a 'data-courseid' attribute.
  */
-export const processDeleteEntry = (id, entriesList) => {
-    const courseid = entriesList.dataset.courseid;
-    // eslint-disable-next-line
-    console.log(`Deleting entry ${id} from course ${courseid}`);
-    ajax.call([
+export const processDeleteEntry = function(id, list) {
+    var courseid = list.getAttribute('data-courseid');
+    // Call the AJAX method to delete the entry and then reload the list.
+    var requests = ajax.call([
         {
             methodname: 'tool_devcourse_delete_entry',
             args: {id: id}
+        },
+        {
+            methodname: 'tool_devcourse_list_entries',
+            args: {courseid: courseid}
         }
-    ])[0]
-        .then(() => {
-            // eslint-disable-next-line
-            console.log(`Entry ${id} deleted successfully.`);
-            return ajax.call([
-                {
-                    methodname: 'tool_devcourse_list_entries',
-                    args: {courseid: courseid}
-                }
-            ])[0];
-        })
-        .then(data => {
-            // eslint-disable-next-line
-            console.log(`DATA: ${JSON.stringify(data)}`, entriesList);
-            loadList(data, entriesList);
-            return null;
-        })
-        .catch(notification.exception);
+    ]);
+    requests[1].done(function(data) {
+        // We reload DOM.
+        reloadList(data, list);
+    }).fail(notification.exception);
 };
 
 /**
- * Loads and renders the entries list
+ * Replaces a given list element in the DOM with new content rendered from a template and data.
  *
- * @method loadList
- * @param {Object} data
- * @param {Object} entriesList
+ * @param {Object} data - The data to be passed to the template renderer.
+ * @param {HTMLElement} list - The DOM element representing the list to be replaced.
  */
-export const loadList = (data, entriesList) => {
-    templates.render('tool_devcourse/entries_list', data)
-        .then(([html]) => {
-            entriesList.replaceWith(html);
-            return null;
-        })
-        .catch(notification.exception);
+export const reloadList = function(data, list) {
+    templates.render('tool_devcourse/entries_list', data).done(function(html) {
+        // We create a temporary container and assign the HTML.
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        // Insert all child nodes before removing the original.
+        const parent = list.parentNode;
+        while (temp.firstChild) {
+            parent.insertBefore(temp.firstChild, list);
+        }
+        // Remove the original element.
+        parent.removeChild(list);
+    });
 };
 
 /**
@@ -112,6 +104,7 @@ export const loadList = (data, entriesList) => {
 export const clickHandler = (selector) => {
     const items = document.querySelectorAll(selector);
 
+    // Attach click event listeners to each item.
     items.forEach((item) => {
         item.addEventListener("click", (e) => {
             e.preventDefault();
