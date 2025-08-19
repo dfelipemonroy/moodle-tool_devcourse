@@ -108,15 +108,17 @@ class tool_devcourse_api {
             throw new \coding_exception('Object data must contain property courseid');
         }
 
-        $now = time();
         $insertdata = array_intersect_key((array) $data, [
             'courseid' => 1,
             'name' => 1,
             'completed' => 1,
             'priority' => 1,
-            'timemodified' => $now,
-            'timecreated' => $now,
+            'description' => 1,
+            'descriptionformat' => 1,
         ]);
+        $now = time();
+        $insertdata['timecreated'] = $now;
+        $insertdata['timemodified'] = $now;
 
         $entryid = $DB->insert_record(self::$table, $insertdata);
         if (isset($data->description_editor)) {

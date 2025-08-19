@@ -1,4 +1,4 @@
-@tool @tool_devcourse
+@tool @tool_devcourse @javascript
 Feature: Creating, editing and deleting entries.
     In order to manage entries
     As a teacher

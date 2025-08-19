@@ -144,6 +144,6 @@ class api_test extends advanced_testcase {
         $this->assertEquals($course->id, $entry->courseid);
         $this->assertEquals('testname2', $entry->name);
         $this->assertEquals('description edited', $entry->description);
-
     }
+
 }
