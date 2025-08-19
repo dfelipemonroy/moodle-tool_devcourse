@@ -198,7 +198,10 @@ class tool_devcourse_table extends table_sql {
         $output .= html_writer::link(
             $deleteurl,
             get_string('delete'),
-            ['data-action' => 'deleteentry']
+            [
+                'data-action' => 'deleteentry',
+                'data-entryid' => $row->id,
+            ]
         );
 
         return $output;

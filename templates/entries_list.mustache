@@ -23,16 +23,18 @@
     {
         "courseid": 2,
         "coursename": "Test course",
-        "entriestable": "List of entries",
+        "contents": "List of entries",
         "addlink": "#"
     }
 }}
 
-<h2>{{#str}} helloworld, tool_devcourse {{/str}}</h2>
-<p>{{#str}} youareviewing , tool_devcourse , {{courseid}} {{/str}}</p>
-<p>{{{coursename}}}</p>
+<div class="entries_list" data-courseid="{{courseid}}">
+    <h2>{{#str}} helloworld, tool_devcourse {{/str}}</h2>
+    <p>{{#str}} youareviewing , tool_devcourse , {{courseid}} {{/str}}</p>
+    <p>{{{coursename}}}</p>
 
-{{{contents}}}
+    {{{contents}}}
+</div>
 
 {{#addlink}}
     <a href="{{{.}}}">

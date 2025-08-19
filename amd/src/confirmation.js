@@ -23,12 +23,17 @@
 
 import * as str from 'core/str';
 import * as notification from 'core/notification';
+import * as ajax from 'core/ajax';
+import * as templates from 'core/templates';
 
 /**
- * Shows a confirmation dialog for deletion and redirects if confirmed.
- * @param {string} url - The URL to redirect to if deletion is confirmed.
+ * Displays a confirmation dialog to the user before deleting an entry.
+ * If the user confirms, proceeds to delete the entry and update the entries list.
+ *
+ * @param {number|string} id - The identifier of the entry to be deleted.
+ * @param {Array} entriesList - The list of entries to update after deletion.
  */
-export const confirmDeletion = (url) => {
+export const confirmDeletion = (id, entriesList) => {
     let pluginname = 'tool_devcourse';
 
     str.get_strings([
@@ -40,7 +45,7 @@ export const confirmDeletion = (url) => {
     .then(strings => {
         // Show confirmation dialog. If user confirms, redirect to the given URL.
         notification.confirm(strings[0], strings[1], strings[2], strings[3], () => {
-            window.location.href = url;
+            processDeleteEntry(id, entriesList);
         });
         return null;
     })
@@ -49,18 +54,70 @@ export const confirmDeletion = (url) => {
 };
 
 /**
+ * Calls the services to delete the entry and retrieve the entries list
+ *
+ * @method processDeleteEntry
+ * @param {Number} id
+ * @param {Object} entriesList
+ */
+export const processDeleteEntry = (id, entriesList) => {
+    const courseid = entriesList.dataset.courseid;
+    // eslint-disable-next-line
+    console.log(`Deleting entry ${id} from course ${courseid}`);
+    ajax.call([
+        {
+            methodname: 'tool_devcourse_delete_entry',
+            args: {id: id}
+        }
+    ])[0]
+        .then(() => {
+            // eslint-disable-next-line
+            console.log(`Entry ${id} deleted successfully.`);
+            return ajax.call([
+                {
+                    methodname: 'tool_devcourse_list_entries',
+                    args: {courseid: courseid}
+                }
+            ])[0];
+        })
+        .then(data => {
+            // eslint-disable-next-line
+            console.log(`DATA: ${JSON.stringify(data)}`, entriesList);
+            loadList(data, entriesList);
+            return null;
+        })
+        .catch(notification.exception);
+};
+
+/**
+ * Loads and renders the entries list
+ *
+ * @method loadList
+ * @param {Object} data
+ * @param {Object} entriesList
+ */
+export const loadList = (data, entriesList) => {
+    templates.render('tool_devcourse/entries_list', data)
+        .then(([html]) => {
+            entriesList.replaceWith(html);
+            return null;
+        })
+        .catch(notification.exception);
+};
+
+/**
  * Attaches a click handler to all elements matching the selector to trigger confirmation.
  * @param {string} selector - CSS selector for elements that trigger the confirmation dialog.
  */
-export const onClickHandler = (selector) => {
-    document.querySelectorAll(selector).forEach(item => {
-        item.addEventListener('click', event => {
-            // Prevent the default link behavior.
-            event.preventDefault();
-            const href = item.getAttribute('href');
-            if (href) {
-                confirmDeletion(href);
-            }
+export const clickHandler = (selector) => {
+    const items = document.querySelectorAll(selector);
+
+    items.forEach((item) => {
+        item.addEventListener("click", (e) => {
+            e.preventDefault();
+            const id = item.dataset.entryid;
+            const entriesList = item.closest('.entries_list');
+            confirmDeletion(id, entriesList);
         });
     });
 };
@@ -70,5 +127,5 @@ export const onClickHandler = (selector) => {
  * @param {string} selector - CSS selector for elements that trigger the confirmation dialog.
  */
 export const init = (selector) => {
-    onClickHandler(selector);
+    clickHandler(selector);
 };

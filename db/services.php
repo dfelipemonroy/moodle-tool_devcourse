@@ -15,17 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * External functions and service declaration for Tool Dev Course.
  *
  * @package    tool_devcourse
+ * @category   webservice
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2025081600;
-$plugin->requires  = 2018050800;
-$plugin->release   = 'v2.5';
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->component = 'tool_devcourse';
+// External services for Tool Dev Course.
+$functions = [
+    'tool_devcourse_delete_entry' => [
+        'classname' => \tool_devcourse\external::class,
+        'methodname' => 'delete_entry',
+        'description' => 'Delete entry',
+        'type' => 'write',
+        'ajax' => true,
+        'capabilities' => 'tool/devcourse:edit',
+    ],
+    'tool_devcourse_list_entries' => [
+        'classname' => \tool_devcourse\external::class,
+        'methodname' => 'list_entries',
+        'description' => 'List entries',
+        'type' => 'read',
+        'ajax' => true,
+        'capabilities' => 'tool/devcourse:view',
+    ],
+];

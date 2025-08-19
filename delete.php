@@ -15,17 +15,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Deletes an existing entry permanently.
  *
  * @package    tool_devcourse
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require('../../../config.php');
 
-$plugin->version   = 2025081600;
-$plugin->requires  = 2018050800;
-$plugin->release   = 'v2.5';
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->component = 'tool_devcourse';
+// Get the entry ID.
+$id = required_param('id', PARAM_INT);
+require_sesskey();
+
+// Retrieve the entry.
+$entry = \tool_devcourse_api::retrieve($id, 0, MUST_EXIST);
+$courseid = $entry->courseid;
+$params = ['id' => $id];
+$contextcourse = \context_course::instance($courseid);
+
+// Check permissions.
+require_login($courseid);
+require_capability('tool/devcourse:edit', $contextcourse);
+
+$url = new moodle_url('/admin/tool/devcourse/delete.php', $params);
+$returnurl = new moodle_url('/admin/tool/devcourse/index.php', ['id' => $courseid]);
+$PAGE->set_url($url);
+$PAGE->set_context($contextcourse);
+
+// Delete the entry.
+\tool_devcourse_api::delete($id);
+redirect($returnurl);

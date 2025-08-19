@@ -64,7 +64,7 @@ class entries_list implements \templatable, \renderable {
      */
     public function export_for_template(renderer_base $output) {
         $course = get_course($this->courseid);
-        $context = context_course::instance($this->courseid);
+        $context = \context_course::instance($this->courseid);
         $data = [
             'courseid' => $this->courseid,
             'coursename' => format_string(
