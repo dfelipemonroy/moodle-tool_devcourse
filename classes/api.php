@@ -93,6 +93,14 @@ class tool_devcourse_api {
         ]);
         $updatedata['timemodified'] = time();
         $DB->update_record(self::$table, $updatedata);
+
+        // We need to trigger an event for the updated entry.
+        $entry = self::retrieve($data->id);
+        $event = \tool_devcourse\event\entry_updated::create([
+            'context' => context_course::instance($entry->courseid),
+            'objectid' => $entry->id,
+        ]);
+        $event->trigger();
     }
 
     /**
@@ -108,6 +116,8 @@ class tool_devcourse_api {
             throw new \coding_exception('Object data must contain property courseid');
         }
 
+        $context = context_course::instance($data->courseid);
+
         $insertdata = array_intersect_key((array) $data, [
             'courseid' => 1,
             'name' => 1,
@@ -122,7 +132,6 @@ class tool_devcourse_api {
 
         $entryid = $DB->insert_record(self::$table, $insertdata);
         if (isset($data->description_editor)) {
-            $context = \context_course::instance($data->courseid);
             $data = file_postupdate_standard_editor($data, 'description',
                 self::editor_options(), $context, self::$pluginname, 'entry', $entryid);
             $updatedata = [
@@ -132,6 +141,13 @@ class tool_devcourse_api {
             ];
             $DB->update_record(self::$table, $updatedata);
         }
+
+        // We need to trigger an event for the newly created entry.
+        $event = \tool_devcourse\event\entry_created::create([
+            'context' => $context,
+            'objectid' => $entryid,
+        ]);
+        $event->trigger();
 
         return $entryid;
     }
@@ -143,7 +159,18 @@ class tool_devcourse_api {
      */
     public static function delete(int $id) {
         global $DB;
+        $entry = self::retrieve($id, 0, IGNORE_MISSING);
+        if (empty($entry)) {
+            return;
+        }
         $DB->delete_records(self::$table, ['id' => $id]);
+
+        // We need to trigger an event for the deleted entry.
+        $event = \tool_devcourse\event\entry_deleted::create([
+            'context' => context_course::instance($entry->courseid),
+            'objectid' => $entry->id,
+        ]);
+        $event->trigger();
     }
 
     /**
@@ -162,6 +189,20 @@ class tool_devcourse_api {
             'context' => $PAGE->context,
             'noclean' => true,
         ];
+    }
+
+    /**
+     * Observer for the course_deleted event.
+     *
+     * This method is triggered when a course is deleted in Moodle.
+     * It handles any necessary cleanup or processing related to the course deletion event.
+     *
+     * @param \core\event\course_deleted $event The event object containing details about the deleted course.
+     */
+    public static function course_deleted_observer(\core\event\course_deleted $event) {
+        global $DB;
+
+        $DB->delete_records('tool_devcourse', ['courseid' => $event->objectid]);
     }
 
 }

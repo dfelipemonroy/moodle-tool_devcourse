@@ -1,0 +1,129 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+use context_course;
+
+/**
+ * Tests for the events of tool_devcourse plugin.
+ *
+ * @package    tool_devcourse
+ * @category   test
+ * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class events_test extends \advanced_testcase {
+
+    /**
+     * Sets up the environment before each test.
+     *
+     * This method is called before each test is executed. It can be used to initialize
+     * objects, set up database fixtures, or perform any other setup required for the tests.
+     *
+     * @return void
+     */
+    public function setUp(): void {
+        parent::setUp();
+        $this->resetAfterTest();
+    }
+
+    /**
+     * Tests that an entry is correctly created and the appropriate event is triggered.
+     *
+     * @covers ::entry_created
+     */
+    public function test_entry_created(): void {
+        $course = $this->getDataGenerator()->create_course();
+
+        // Trigger Event.
+        $sink = $this->redirectEvents();
+        $entryid = tool_devcourse_api::insert((object) [
+            'courseid'  => $course->id,
+            'name' => 'Test entry',
+            'completed' => 0,
+            'priority' => 0,
+            'description' => 'Entry description',
+        ]);
+        $events = $sink->get_events();
+        $event = reset($events);
+
+        // Assert that the event is of the expected type and contains the correct data.
+        $this->assertInstanceOf('\tool_devcourse\event\entry_created', $event);
+        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals($entryid, $event->objectid);
+    }
+
+    /**
+     * Tests that the entry_updated event is triggered and handled correctly.
+     *
+     * This test verifies the behavior of the system when an entry is updated,
+     * ensuring that the appropriate event is fired and any related logic is executed as expected.
+     */
+    public function test_entry_updated(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $entryid = tool_devcourse_api::insert((object) [
+            'courseid'  => $course->id,
+            'name' => 'Test entry',
+            'completed' => 0,
+            'priority' => 0,
+            'description' => 'Entry description',
+        ]);
+
+        // Trigger Event.
+        $sink = $this->redirectEvents();
+        tool_devcourse_api::update((object) [
+            'id' => $entryid,
+            'name' => 'Test entry 2',
+        ]);
+        $events = $sink->get_events();
+        $this->assertCount(1, $events);
+        $event = reset($events);
+
+        // Assert that the event is of the expected type and contains the correct data.
+        $this->assertInstanceOf('\tool_devcourse\event\entry_updated', $event);
+        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals($entryid, $event->objectid);
+    }
+
+    /**
+     * Tests the event triggered when an entry is deleted.
+     *
+     * This test verifies that the appropriate event is fired and handled correctly
+     * when an entry is deleted within the system.
+     */
+    public function test_entry_deleted(): void {
+        $course = $this->getDataGenerator()->create_course();
+        $entryid = tool_devcourse_api::insert((object) [
+            'courseid'  => $course->id,
+            'name' => 'Test entry',
+            'completed' => 0,
+            'priority' => 0,
+            'description' => 'Entry description',
+        ]);
+
+        // Trigger Event.
+        $sink = $this->redirectEvents();
+        tool_devcourse_api::delete($entryid);
+        $events = $sink->get_events();
+        $this->assertCount(1, $events);
+        $event = reset($events);
+
+        // Assert that the event is of the expected type and contains the correct data.
+        $this->assertInstanceOf('\tool_devcourse\event\entry_deleted', $event);
+        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertEquals($entryid, $event->objectid);
+    }
+
+}

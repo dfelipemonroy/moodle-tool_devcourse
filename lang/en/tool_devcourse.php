@@ -44,3 +44,9 @@ $string['editentry'] = 'Edit entry';
 $string['errornameexists'] = 'Name must be unique in this course';
 $string['newentry'] = 'New entry';
 $string['confirmdeleteentry'] = 'Are you sure you want to delete this entry?';
+
+// Events and logging.
+$string['evententrycreated'] = 'Entry created';
+$string['evententrydeleted'] = 'Entry deleted';
+$string['evententryupdated'] = 'Entry updated';
+$string['evententryviewed']  = 'Entry viewed';

@@ -15,17 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Event observers for tool_devcourse Plugin.
  *
  * @package    tool_devcourse
+ * @category   event
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2025081500;
-$plugin->requires  = 2018050800;
-$plugin->release   = 'v2.4';
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->component = 'tool_devcourse';
+// Event observers are defined here.
+$observers = [
+    [
+        'eventname' => 'core\event\course_deleted',
+        'callback' => 'tool_devcourse\api::course_deleted_observer',
+    ],
+];
