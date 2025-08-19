@@ -39,3 +39,16 @@
         <button class="btn btn-primary">{{#str}} newentry, tool_devcourse {{/str}}</button>
     </a>
 {{/addlink}}
+
+{{#js}}
+    require(
+    [
+    'tool_devcourse/confirm'
+    ],
+    function(
+    c
+    ) {
+    c.init('[data-action=deleteentry]');
+    });
+
+{{/js}}

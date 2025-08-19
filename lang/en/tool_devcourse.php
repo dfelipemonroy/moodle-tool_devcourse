@@ -43,3 +43,4 @@ $string['devcourse:view'] = 'View Dev Course data';
 $string['editentry'] = 'Edit entry';
 $string['errornameexists'] = 'Name must be unique in this course';
 $string['newentry'] = 'New entry';
+$string['confirmdeleteentry'] = 'Are you sure you want to delete this entry?';
