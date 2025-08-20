@@ -36,8 +36,6 @@ use advanced_testcase;
  * @category   test
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @codeCoverageIgnore
- * @coversDefaultClass tool_devcourse_api
  */
 final class events_test extends \advanced_testcase {
 
@@ -59,6 +57,8 @@ final class events_test extends \advanced_testcase {
      *
      * This test verifies the behavior of the system when a new entry is created,
      * ensuring that the appropriate event is fired and any related logic is executed as expected.
+     *
+     * @covers \tool_devcourse\event\entry_created
      */
     public function test_entry_created(): void {
         $course = $this->getDataGenerator()->create_course();
@@ -86,6 +86,8 @@ final class events_test extends \advanced_testcase {
      *
      * This test verifies the behavior of the system when an entry is updated,
      * ensuring that the appropriate event is fired and any related logic is executed as expected.
+     *
+     * @covers \tool_devcourse\event\entry_updated
      */
     public function test_entry_updated(): void {
         $course = $this->getDataGenerator()->create_course();
@@ -130,6 +132,8 @@ final class events_test extends \advanced_testcase {
      *
      * This test verifies that the appropriate event is fired and handled correctly
      * when an entry is deleted within the system.
+     *
+     * @covers \tool_devcourse\event\entry_deleted
      */
     public function test_entry_deleted(): void {
         $course = $this->getDataGenerator()->create_course();

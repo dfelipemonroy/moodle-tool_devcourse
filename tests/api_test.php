@@ -32,8 +32,6 @@ use advanced_testcase;
  * @category   test
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @codeCoverageIgnore
- * @coversDefaultClass tool_devcourse_api
  *
  */
 final class api_test extends advanced_testcase {
@@ -44,7 +42,6 @@ final class api_test extends advanced_testcase {
      * This method is called before each test is executed. It can be used to initialize
      * objects, set up database fixtures, or perform any other setup required for the tests.
      *
-     * @return void
      */
     protected function setUp(): void {
         parent::setUp();
@@ -57,9 +54,10 @@ final class api_test extends advanced_testcase {
      * This test verifies that the insert operation behaves as expected,
      * ensuring that data is correctly added to the system.
      *
-     * @return void
+     * @covers \tool_devcourse_api::insert
+     * @covers \tool_devcourse_api::retrieve
      */
-    public function test_insert() {
+    public function test_insert(): void {
         $course = $this->getDataGenerator()->create_course();
         $entryid = \tool_devcourse_api::insert((object) [
             'courseid' => $course->id,
@@ -81,9 +79,10 @@ final class api_test extends advanced_testcase {
      * ensuring that the relevant data is correctly modified and any side
      * effects are handled appropriately.
      *
-     * @return void
+     * @covers \tool_devcourse_api::update
+     * @covers \tool_devcourse_api::retrieve
      */
-    public function test_update() {
+    public function test_update(): void {
         $course = $this->getDataGenerator()->create_course();
         $entryid = \tool_devcourse_api::insert((object) [
             'courseid' => $course->id,
@@ -112,9 +111,10 @@ final class api_test extends advanced_testcase {
      * ensuring that the relevant data is properly removed and any
      * necessary cleanup is performed.
      *
-     * @return void
+     * @covers \tool_devcourse_api::delete
+     * @covers \tool_devcourse_api::retrieve
      */
-    public function test_delete() {
+    public function test_delete(): void {
         $course = $this->getDataGenerator()->create_course();
         $entryid = \tool_devcourse_api::insert((object) [
             'courseid' => $course->id,
@@ -132,9 +132,11 @@ final class api_test extends advanced_testcase {
      * This test verifies that the description editor behaves as expected,
      * ensuring that the API processes and returns the correct data.
      *
-     * @return void
+     * @covers \tool_devcourse_api::insert
+     * @covers \tool_devcourse_api::retrieve
+     * @covers \tool_devcourse_api::update
      */
-    public function test_description_editor() {
+    public function test_description_editor(): void {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
