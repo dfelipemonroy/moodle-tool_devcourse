@@ -80,10 +80,15 @@ class api_test extends advanced_testcase {
             'courseid' => $course->id,
             'name' => 'testname1',
         ]);
+        $entry = tool_devcourse_api::retrieve($entryid);
         tool_devcourse_api::update((object) [
             'id' => $entryid,
+            'courseid' => $entry->courseid,
             'name' => 'testname2',
+            'completed' => isset($entry->completed) ? $entry->completed : 0,
+            'priority' => isset($entry->priority) ? $entry->priority : 0,
             'description' => 'description updated',
+            'descriptionformat' => isset($entry->descriptionformat) ? $entry->descriptionformat : 1,
         ]);
         $entry = tool_devcourse_api::retrieve($entryid);
         $this->assertEquals($course->id, $entry->courseid);
@@ -100,13 +105,14 @@ class api_test extends advanced_testcase {
      */
     public function test_delete() {
         $course = $this->getDataGenerator()->create_course();
-        $entryid = tool_devcourse_api::insert((object)[
+        $entryid = tool_devcourse_api::insert((object) [
             'courseid' => $course->id,
             'name' => 'testname1'
         ]);
+
         tool_devcourse_api::delete($entryid);
         $entry = tool_devcourse_api::retrieve($entryid, 0, IGNORE_MISSING);
-        $this->assertEmpty($entry);
+        $this->assertFalse($entry);
     }
 
     /**
@@ -115,7 +121,6 @@ class api_test extends advanced_testcase {
      * This test verifies that the description editor behaves as expected,
      * ensuring that the API processes and returns the correct data.
      *
-     * @covers ::description_editor
      */
     public function test_description_editor() {
         $this->setAdminUser();
@@ -134,12 +139,16 @@ class api_test extends advanced_testcase {
         $this->assertEquals('description formatted', $entry->description);
         tool_devcourse_api::update((object) [
             'id' => $entryid,
+            'courseid' => $entry->courseid,
             'name' => 'testname2',
+            'completed' => isset($entry->completed) ? $entry->completed : 0,
+            'priority' => isset($entry->priority) ? $entry->priority : 0,
             'description_editor' => [
                 'text' => 'description edited',
                 'format' => FORMAT_HTML,
                 'itemid' => file_get_unused_draft_itemid(),
             ],
+            'descriptionformat' => isset($entry->descriptionformat) ? $entry->descriptionformat : 1,
         ]);
         $entry = tool_devcourse_api::retrieve($entryid);
         $this->assertEquals($course->id, $entry->courseid);

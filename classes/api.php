@@ -56,27 +56,23 @@ class tool_devcourse_api {
      * @param int $courseid optional course id for validation
      * @param int $strictness
      *
-     * @return stdClass|bool retrieved object or false if entry not found and strictness is IGNORE_MISSING
+     * @return stdClass|null
      */
     public static function retrieve(int $id, int $courseid = 0, int $strictness = MUST_EXIST) {
         global $DB;
-        /*
-        $params = ['id' => $id];
-        if (!empty($courseid)) {
-            $params['courseid'] = $courseid;
-        }
-        return $DB->get_record(self::$table, $params, '*', $strictness);
-        */
+
         $cache = cache::make(self::$pluginname, 'entry');
-        $entry = $cache->get($id);
-        if (empty($entry)) {
+        $entry = null;
+        if (!$entry = $cache->get($id)) {
             $params = ['id' => $id];
             if ($courseid) {
                 $params['courseid'] = $courseid;
             }
 
             $entry = $DB->get_record(self::$table, $params, '*', $strictness);
-            $cache->set($entry->id, $entry);
+            if (!empty($entry) && is_object($entry)) {
+                $cache->set($entry->id, $entry);
+            }
         }
 
         return $entry;
@@ -186,7 +182,7 @@ class tool_devcourse_api {
     public static function delete(int $id) {
         global $DB;
         $entry = self::retrieve($id, 0, IGNORE_MISSING);
-        if (empty($entry)) {
+        if (empty($entry) || !is_object($entry)) {
             return;
         }
         $DB->delete_records(self::$table, ['id' => $id]);

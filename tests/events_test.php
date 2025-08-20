@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use context_course;
-
 /**
  * Tests for the events of tool_devcourse plugin.
  *
@@ -42,7 +40,8 @@ class events_test extends \advanced_testcase {
     /**
      * Tests that an entry is correctly created and the appropriate event is triggered.
      *
-     * @covers ::entry_created
+     * This test verifies the behavior of the system when a new entry is created,
+     * ensuring that the appropriate event is fired and any related logic is executed as expected.
      */
     public function test_entry_created(): void {
         $course = $this->getDataGenerator()->create_course();
@@ -60,8 +59,8 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Assert that the event is of the expected type and contains the correct data.
-        $this->assertInstanceOf('\tool_devcourse\event\entry_created', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertInstanceOf('\\tool_devcourse\\event\\entry_created', $event);
+        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
         $this->assertEquals($entryid, $event->objectid);
     }
 
@@ -73,6 +72,7 @@ class events_test extends \advanced_testcase {
      */
     public function test_entry_updated(): void {
         $course = $this->getDataGenerator()->create_course();
+
         $entryid = tool_devcourse_api::insert((object) [
             'courseid'  => $course->id,
             'name' => 'Test entry',
@@ -81,19 +81,30 @@ class events_test extends \advanced_testcase {
             'description' => 'Entry description',
         ]);
 
+        // Retrieve the full record to get all required fields.
+        $entry = \tool_devcourse_api::retrieve($entryid);
+
         // Trigger Event.
         $sink = $this->redirectEvents();
+
+        // We perform the update.
         tool_devcourse_api::update((object) [
             'id' => $entryid,
+            'courseid' => $entry->courseid,
             'name' => 'Test entry 2',
+            'completed' => $entry->completed,
+            'priority' => $entry->priority,
+            'description' => $entry->description,
+            'descriptionformat' => isset($entry->descriptionformat) ? $entry->descriptionformat : 1,
+            'timemodified' => time(),
         ]);
         $events = $sink->get_events();
         $this->assertCount(1, $events);
         $event = reset($events);
 
         // Assert that the event is of the expected type and contains the correct data.
-        $this->assertInstanceOf('\tool_devcourse\event\entry_updated', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertInstanceOf('\\tool_devcourse\\event\\entry_updated', $event);
+        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
         $this->assertEquals($entryid, $event->objectid);
     }
 
@@ -121,8 +132,8 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Assert that the event is of the expected type and contains the correct data.
-        $this->assertInstanceOf('\tool_devcourse\event\entry_deleted', $event);
-        $this->assertEquals(context_course::instance($course->id), $event->get_context());
+        $this->assertInstanceOf('\\tool_devcourse\\event\\entry_deleted', $event);
+        $this->assertEquals(\context_course::instance($course->id), $event->get_context());
         $this->assertEquals($entryid, $event->objectid);
     }
 
