@@ -24,8 +24,6 @@
 
 namespace tool_devcourse\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use renderer_base;
 use moodle_url;
 use tool_devcourse_table;

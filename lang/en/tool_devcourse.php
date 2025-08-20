@@ -24,35 +24,26 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// General strings.
-$string['pluginname'] = 'Admin Tool Moodle Dev Course';
-$string['helloworld'] = 'Hello world!';
-$string['youareviewing'] = 'You are viewing course {$a}';
 $string['completed'] = 'Completed';
-$string['name'] = 'Name';
+$string['confirmdeleteentry'] = 'Are you sure you want to delete this entry?';
 $string['description'] = 'Description';
-$string['priority'] = 'Priority';
-$string['timecreated'] = 'Time created';
-$string['timemodified'] = 'Time modified';
-
-// Capabilities.
 $string['devcourse:edit'] = 'Edit Dev Course data';
 $string['devcourse:view'] = 'View Dev Course data';
-
-// Form strings.
+$string['devcourse_disabled'] = 'The Tool Dev Course functionality is disabled, please contact your administrator.';
 $string['editentry'] = 'Edit entry';
+$string['enabled'] = 'Enable';
+$string['enabled_desc'] = 'Enable the Tool Dev Course functionality.';
 $string['errornameexists'] = 'Name must be unique in this course';
-$string['newentry'] = 'New entry';
-$string['confirmdeleteentry'] = 'Are you sure you want to delete this entry?';
-
-// Events and logging.
 $string['evententrycreated'] = 'Entry created';
 $string['evententrydeleted'] = 'Entry deleted';
 $string['evententryupdated'] = 'Entry updated';
 $string['evententryviewed']  = 'Entry viewed';
-
-// Settings.
 $string['generalsettings'] = 'Manage Tool Dev Course settings';
-$string['enabled'] = 'Enable';
-$string['enabled_desc'] = 'Enable the Tool Dev Course functionality.';
-$string['devcourse_disabled'] = 'The Tool Dev Course functionality is disabled, please contact your administrator.';
+$string['helloworld'] = 'Hello world!';
+$string['name'] = 'Name';
+$string['newentry'] = 'New entry';
+$string['pluginname'] = 'Admin Tool Moodle Dev Course';
+$string['priority'] = 'Priority';
+$string['timecreated'] = 'Time created';
+$string['timemodified'] = 'Time modified';
+$string['youareviewing'] = 'You are viewing course {$a}';

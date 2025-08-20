@@ -22,7 +22,24 @@
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class events_test extends \advanced_testcase {
+
+namespace tool_devcourse;
+use advanced_testcase;
+
+/**
+ * Unit tests for event handling in the devcourse tool.
+ *
+ * This class contains test cases to verify the correct behavior of events
+ * within the devcourse admin tool in Moodle Workplace.
+ *
+ * @package    tool_devcourse
+ * @category   test
+ * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @codeCoverageIgnore
+ * @coversDefaultClass tool_devcourse_api
+ */
+final class events_test extends \advanced_testcase {
 
     /**
      * Sets up the environment before each test.
@@ -48,7 +65,7 @@ class events_test extends \advanced_testcase {
 
         // Trigger Event.
         $sink = $this->redirectEvents();
-        $entryid = tool_devcourse_api::insert((object) [
+        $entryid = \tool_devcourse_api::insert((object) [
             'courseid'  => $course->id,
             'name' => 'Test entry',
             'completed' => 0,
@@ -73,7 +90,7 @@ class events_test extends \advanced_testcase {
     public function test_entry_updated(): void {
         $course = $this->getDataGenerator()->create_course();
 
-        $entryid = tool_devcourse_api::insert((object) [
+        $entryid = \tool_devcourse_api::insert((object) [
             'courseid'  => $course->id,
             'name' => 'Test entry',
             'completed' => 0,
@@ -88,7 +105,7 @@ class events_test extends \advanced_testcase {
         $sink = $this->redirectEvents();
 
         // We perform the update.
-        tool_devcourse_api::update((object) [
+        \tool_devcourse_api::update((object) [
             'id' => $entryid,
             'courseid' => $entry->courseid,
             'name' => 'Test entry 2',
@@ -116,7 +133,7 @@ class events_test extends \advanced_testcase {
      */
     public function test_entry_deleted(): void {
         $course = $this->getDataGenerator()->create_course();
-        $entryid = tool_devcourse_api::insert((object) [
+        $entryid = \tool_devcourse_api::insert((object) [
             'courseid'  => $course->id,
             'name' => 'Test entry',
             'completed' => 0,
@@ -126,7 +143,7 @@ class events_test extends \advanced_testcase {
 
         // Trigger Event.
         $sink = $this->redirectEvents();
-        tool_devcourse_api::delete($entryid);
+        \tool_devcourse_api::delete($entryid);
         $events = $sink->get_events();
         $this->assertCount(1, $events);
         $event = reset($events);

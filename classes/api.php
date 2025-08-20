@@ -122,9 +122,9 @@ class tool_devcourse_api {
      *
      * @param stdClass $data
      *
-     * @return int id of the new entry
+     * @return int|bool id of the new entry, or false on failure.
      */
-    public static function insert(stdClass $data) : int {
+    public static function insert(stdClass $data): bool|int {
         global $DB;
         if (empty($data->courseid)) {
             throw new \coding_exception('Object data must contain property courseid');

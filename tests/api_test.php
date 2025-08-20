@@ -22,16 +22,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace tool_devcourse;
+use advanced_testcase;
 
 /**
  * API tests class for the tool_devcourse plugin.
  *
  * @package    tool_devcourse
+ * @category   test
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @codeCoverageIgnore
+ * @coversDefaultClass tool_devcourse_api
+ *
  */
-class api_test extends advanced_testcase {
+final class api_test extends advanced_testcase {
 
     /**
      * Sets up the environment before each test.
@@ -51,17 +56,19 @@ class api_test extends advanced_testcase {
      *
      * This test verifies that the insert operation behaves as expected,
      * ensuring that data is correctly added to the system.
+     *
+     * @return void
      */
     public function test_insert() {
         $course = $this->getDataGenerator()->create_course();
-        $entryid = tool_devcourse_api::insert((object) [
+        $entryid = \tool_devcourse_api::insert((object) [
             'courseid' => $course->id,
             'name' => 'testname1',
             'completed' => 1,
             'priority' => 0,
             'description' => 'description plain',
         ]);
-        $entry = tool_devcourse_api::retrieve($entryid);
+        $entry = \tool_devcourse_api::retrieve($entryid);
         $this->assertEquals($course->id, $entry->courseid);
         $this->assertEquals('testname1', $entry->name);
         $this->assertEquals('description plain', $entry->description);
@@ -73,15 +80,17 @@ class api_test extends advanced_testcase {
      * This test verifies that the update operation performs as expected,
      * ensuring that the relevant data is correctly modified and any side
      * effects are handled appropriately.
+     *
+     * @return void
      */
     public function test_update() {
         $course = $this->getDataGenerator()->create_course();
-        $entryid = tool_devcourse_api::insert((object) [
+        $entryid = \tool_devcourse_api::insert((object) [
             'courseid' => $course->id,
             'name' => 'testname1',
         ]);
-        $entry = tool_devcourse_api::retrieve($entryid);
-        tool_devcourse_api::update((object) [
+        $entry = \tool_devcourse_api::retrieve($entryid);
+        \tool_devcourse_api::update((object) [
             'id' => $entryid,
             'courseid' => $entry->courseid,
             'name' => 'testname2',
@@ -90,7 +99,7 @@ class api_test extends advanced_testcase {
             'description' => 'description updated',
             'descriptionformat' => isset($entry->descriptionformat) ? $entry->descriptionformat : 1,
         ]);
-        $entry = tool_devcourse_api::retrieve($entryid);
+        $entry = \tool_devcourse_api::retrieve($entryid);
         $this->assertEquals($course->id, $entry->courseid);
         $this->assertEquals('testname2', $entry->name);
         $this->assertEquals('description updated', $entry->description);
@@ -102,16 +111,18 @@ class api_test extends advanced_testcase {
      * This test verifies that the delete operation works as expected,
      * ensuring that the relevant data is properly removed and any
      * necessary cleanup is performed.
+     *
+     * @return void
      */
     public function test_delete() {
         $course = $this->getDataGenerator()->create_course();
-        $entryid = tool_devcourse_api::insert((object) [
+        $entryid = \tool_devcourse_api::insert((object) [
             'courseid' => $course->id,
-            'name' => 'testname1'
+            'name' => 'testname1',
         ]);
 
-        tool_devcourse_api::delete($entryid);
-        $entry = tool_devcourse_api::retrieve($entryid, 0, IGNORE_MISSING);
+        \tool_devcourse_api::delete($entryid);
+        $entry = \tool_devcourse_api::retrieve($entryid, 0, IGNORE_MISSING);
         $this->assertFalse($entry);
     }
 
@@ -121,12 +132,13 @@ class api_test extends advanced_testcase {
      * This test verifies that the description editor behaves as expected,
      * ensuring that the API processes and returns the correct data.
      *
+     * @return void
      */
     public function test_description_editor() {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $entryid = tool_devcourse_api::insert((object)[
+        $entryid = \tool_devcourse_api::insert((object)[
             'courseid' => $course->id,
             'name' => 'testname1',
             'description_editor' => [
@@ -135,9 +147,9 @@ class api_test extends advanced_testcase {
                 'itemid' => file_get_unused_draft_itemid(),
             ],
         ]);
-        $entry = tool_devcourse_api::retrieve($entryid);
+        $entry = \tool_devcourse_api::retrieve($entryid);
         $this->assertEquals('description formatted', $entry->description);
-        tool_devcourse_api::update((object) [
+        \tool_devcourse_api::update((object) [
             'id' => $entryid,
             'courseid' => $entry->courseid,
             'name' => 'testname2',
@@ -150,7 +162,7 @@ class api_test extends advanced_testcase {
             ],
             'descriptionformat' => isset($entry->descriptionformat) ? $entry->descriptionformat : 1,
         ]);
-        $entry = tool_devcourse_api::retrieve($entryid);
+        $entry = \tool_devcourse_api::retrieve($entryid);
         $this->assertEquals($course->id, $entry->courseid);
         $this->assertEquals('testname2', $entry->name);
         $this->assertEquals('description edited', $entry->description);
