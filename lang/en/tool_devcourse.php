@@ -50,3 +50,9 @@ $string['evententrycreated'] = 'Entry created';
 $string['evententrydeleted'] = 'Entry deleted';
 $string['evententryupdated'] = 'Entry updated';
 $string['evententryviewed']  = 'Entry viewed';
+
+// Settings.
+$string['generalsettings'] = 'Manage Tool Dev Course settings';
+$string['enabled'] = 'Enable';
+$string['enabled_desc'] = 'Enable the Tool Dev Course functionality.';
+$string['devcourse_disabled'] = 'The Tool Dev Course functionality is disabled, please contact your administrator.';

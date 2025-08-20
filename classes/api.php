@@ -26,11 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
-use cache;
-use context_course;
-use core\exception\coding_exception;
-use stdClass;
-
 /**
  * Class tool_devcourse_api for various api methods.
  *

@@ -74,6 +74,8 @@ class entries_list implements \templatable, \renderable {
             ),
         ];
 
+        $data['enabled'] = get_config($this->pluginname, 'enabled');
+
         // Display table.
         ob_start();
         $table = new tool_devcourse_table($this->pluginname, $this->courseid);

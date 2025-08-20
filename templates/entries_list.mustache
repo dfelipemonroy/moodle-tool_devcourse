@@ -28,19 +28,26 @@
     }
 }}
 
-<div class="entries_list" data-courseid="{{courseid}}">
-    <h2>{{#str}} helloworld, tool_devcourse {{/str}}</h2>
-    <p>{{#str}} youareviewing , tool_devcourse , {{courseid}} {{/str}}</p>
-    <p>{{{coursename}}}</p>
+{{#enabled}}
+    <div class="entries_list" data-courseid="{{courseid}}">
+        <h2>{{#str}} helloworld, tool_devcourse {{/str}}</h2>
+        <p>{{#str}} youareviewing , tool_devcourse , {{courseid}} {{/str}}</p>
+        <p>{{{coursename}}}</p>
 
-    {{{contents}}}
-</div>
+        {{{contents}}}
+    </div>
 
-{{#addlink}}
-    <a href="{{{.}}}">
-        <button class="btn btn-primary">{{#str}} newentry, tool_devcourse {{/str}}</button>
-    </a>
-{{/addlink}}
+    {{#addlink}}
+        <a href="{{{.}}}">
+            <button class="btn btn-primary">{{#str}} newentry, tool_devcourse {{/str}}</button>
+        </a>
+    {{/addlink}}
+{{/enabled}}
+{{^enabled}}
+    <div class="alert alert-warning">
+        {{#str}} devcourse_disabled, tool_devcourse {{/str}}
+    </div>
+{{/enabled}}
 
 {{#js}}
     require([
