@@ -61,7 +61,7 @@ class tool_devcourse_api {
     public static function retrieve(int $id, int $courseid = 0, int $strictness = MUST_EXIST) {
         global $DB;
         $params = ['id' => $id];
-        if ($courseid) {
+        if (!empty($courseid)) {
             $params['courseid'] = $courseid;
         }
         return $DB->get_record(self::$table, $params, '*', $strictness);
@@ -127,11 +127,19 @@ class tool_devcourse_api {
             'descriptionformat' => 1,
         ]);
         $now = time();
+        $insertdata = array_intersect_key((array) $data, [
+            'courseid' => 1,
+            'name' => 1,
+            'completed' => 1,
+            'priority' => 1,
+            'description' => 1,
+            'descriptionformat' => 1,
+        ]);
         $insertdata['timecreated'] = $now;
         $insertdata['timemodified'] = $now;
-
         $entryid = $DB->insert_record(self::$table, $insertdata);
-        if (isset($data->description_editor)) {
+
+        if (!empty($data->description_editor)) {
             $data = file_postupdate_standard_editor($data, 'description',
                 self::editor_options(), $context, self::$pluginname, 'entry', $entryid);
             $updatedata = [

@@ -57,6 +57,7 @@ function tool_devcourse_extend_navigation_course($navigation, $course, $context)
  * @param array $args Additional arguments for the file.
  * @param bool $forcedownload Whether or not to force download.
  * @param array $options Additional options affecting file serving.
+ *
  * @return void|bool Outputs file content or sends appropriate headers, or false if not found.
  */
 function tool_devcourse_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, $options = []) {
