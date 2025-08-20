@@ -15,17 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Cache definitions for Admin Tool DevCourse Plugin.
+ *
+ * This file defines the caching strategies used by the Admin Tool DevCourse plugin.
  *
  * @package    tool_devcourse
+ * @category   cache
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2025081800;
-$plugin->requires  = 2018050800;
-$plugin->release   = 'v2.7';
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->component = 'tool_devcourse';
+// Cache definitions array.
+$definitions = [
+    'entry' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+    ],
+];

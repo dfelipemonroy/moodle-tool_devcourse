@@ -26,6 +26,11 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
+use cache;
+use context_course;
+use core\exception\coding_exception;
+use stdClass;
+
 /**
  * Class tool_devcourse_api for various api methods.
  *
@@ -60,11 +65,26 @@ class tool_devcourse_api {
      */
     public static function retrieve(int $id, int $courseid = 0, int $strictness = MUST_EXIST) {
         global $DB;
+        /*
         $params = ['id' => $id];
         if (!empty($courseid)) {
             $params['courseid'] = $courseid;
         }
         return $DB->get_record(self::$table, $params, '*', $strictness);
+        */
+        $cache = cache::make(self::$pluginname, 'entry');
+        $entry = $cache->get($id);
+        if (empty($entry)) {
+            $params = ['id' => $id];
+            if ($courseid) {
+                $params['courseid'] = $courseid;
+            }
+
+            $entry = $DB->get_record(self::$table, $params, '*', $strictness);
+            $cache->set($entry->id, $entry);
+        }
+
+        return $entry;
     }
 
     /**
@@ -93,6 +113,9 @@ class tool_devcourse_api {
         ]);
         $updatedata['timemodified'] = time();
         $DB->update_record(self::$table, $updatedata);
+
+        $cache = cache::make(self::$pluginname, 'entry');
+        $cache->set($data->id, $data);
 
         // We need to trigger an event for the updated entry.
         $entry = self::retrieve($data->id);
@@ -172,6 +195,9 @@ class tool_devcourse_api {
             return;
         }
         $DB->delete_records(self::$table, ['id' => $id]);
+
+        $cache = cache::make(self::$pluginname, 'entry');
+        $cache->delete($id);
 
         // We need to trigger an event for the deleted entry.
         $event = \tool_devcourse\event\entry_deleted::create([
