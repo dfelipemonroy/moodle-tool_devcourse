@@ -35,13 +35,14 @@
         <p>{{{coursename}}}</p>
 
         {{{contents}}}
-    </div>
 
-    {{#addlink}}
-        <a href="{{{.}}}">
-            <button class="btn btn-primary">{{#str}} newentry, tool_devcourse {{/str}}</button>
-        </a>
-    {{/addlink}}
+        {{#addlink}}
+            <hr>
+            <a href="{{{.}}}">
+                <button class="btn btn-primary">{{#str}} newentry, tool_devcourse {{/str}}</button>
+            </a>
+        {{/addlink}}
+    </div>
 {{/enabled}}
 {{^enabled}}
     <div class="alert alert-warning">
@@ -50,9 +51,7 @@
 {{/enabled}}
 
 {{#js}}
-    require([
-        'tool_devcourse/confirmation'
-    ], function(c) {
+    require(['tool_devcourse/confirmation'], function(c) {
         c.init('[data-action=deleteentry]');
     });
 {{/js}}

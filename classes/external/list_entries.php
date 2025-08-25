@@ -74,6 +74,7 @@ class list_entries extends external_api {
      */
     public static function execute_returns(): external_single_structure {
         return new external_single_structure([
+            'enabled' => new external_value(PARAM_BOOL, 'Enabled'),
             'courseid' => new external_value(PARAM_INT, 'Course id'),
             'coursename' => new external_value(PARAM_NOTAGS, 'Course name'),
             'contents' => new external_value(PARAM_RAW, 'Entries table contents'),

@@ -64,6 +64,7 @@ class entries_list implements \templatable, \renderable {
         $course = get_course($this->courseid);
         $context = \context_course::instance($this->courseid);
         $data = [
+            'enabled' => get_config($this->pluginname, 'enabled'),
             'courseid' => $this->courseid,
             'coursename' => format_string(
                 $course->fullname,
@@ -82,7 +83,7 @@ class entries_list implements \templatable, \renderable {
 
         // Link to add new entry.
         if (has_capability('tool/devcourse:edit', $context)) {
-            $url = new moodle_url('/admin/tool/devcourse/edit.php', ['courseid' => $this->courseid]);
+            $url = new \moodle_url('/admin/tool/devcourse/edit.php', ['courseid' => $this->courseid]);
             $data['addlink'] = $url->out(false);
         }
 

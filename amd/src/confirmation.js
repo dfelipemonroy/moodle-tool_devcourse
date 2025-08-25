@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Confirms the deletion of an entry
+ * Confirms the deletion of an entry.
  *
  * @module     tool_devcourse/confirmation
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
@@ -35,32 +35,28 @@ import * as templates from 'core/templates';
  */
 export const confirmDeletion = (id, entriesList) => {
     str.get_strings([
-        {key: 'delete'},
-        {key: 'confirmdeleteentry', component: 'tool_devcourse'},
-        {key: 'yes'},
-        {key: 'no'}
-    ])
-    .then(strings => {
-        // Show confirmation dialog. If user confirms, redirect to the given URL.
-        notification.confirm(strings[0], strings[1], strings[2], strings[3], () => {
-            processDeleteEntry(id, entriesList);
-        });
-        return null;
-    })
-    // Handle any errors that occur during the string retrieval or confirmation dialog.
-    .catch(notification.exception);
+            {key: 'delete'},
+            {key: 'confirmdeleteentry', component: 'tool_devcourse'},
+            {key: 'yes'},
+            {key: 'no'}
+        ])
+        .then(function(strings) {
+            return notification.confirm(strings[0], strings[1], strings[2], strings[3], function() {
+                processDeleteEntry(id, entriesList);
+            });
+        })
+        .catch(notification.exception);
 };
 
 /**
  * Deletes an entry by its ID and reloads the list of entries for a given course.
  *
  * @param {number|string} id - The ID of the entry to delete.
- * @param {HTMLElement} list - The DOM element representing the list, which must have a 'data-courseid' attribute.
+ * @param {HTMLElement} entriesList - The DOM element representing the list, which must have a 'data-courseid' attribute.
  */
-export const processDeleteEntry = function(id, list) {
-    var courseid = list.getAttribute('data-courseid');
-    // Call the AJAX method to delete the entry and then reload the list.
-    var requests = ajax.call([
+export const processDeleteEntry = (id, entriesList) => {
+    let courseid = entriesList.dataset.courseid;
+    let requests = ajax.call([
         {
             methodname: 'tool_devcourse_delete_entry',
             args: {id: id}
@@ -70,31 +66,26 @@ export const processDeleteEntry = function(id, list) {
             args: {courseid: courseid}
         }
     ]);
-    requests[1].done(function(data) {
+    requests[1].then(function(data) {
         // We reload DOM.
-        reloadList(data, list);
-    }).fail(notification.exception);
+        return reloadList(data, entriesList);
+    })
+    .catch(notification.exception);
 };
 
 /**
- * Replaces a given list element in the DOM with new content rendered from a template and data.
+ * Loads and renders the entries list
  *
- * @param {Object} data - The data to be passed to the template renderer.
- * @param {HTMLElement} list - The DOM element representing the list to be replaced.
+ * @method loadList
+ * @param {Object} data
+ * @param {Object} entriesList
  */
-export const reloadList = function(data, list) {
-    templates.render('tool_devcourse/entries_list', data).done(function(html) {
-        // We create a temporary container and assign the HTML.
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-        // Insert all child nodes before removing the original.
-        const parent = list.parentNode;
-        while (temp.firstChild) {
-            parent.insertBefore(temp.firstChild, list);
-        }
-        // Remove the original element.
-        parent.removeChild(list);
-    });
+export const reloadList = (data, entriesList) => {
+    templates.render('tool_devcourse/entries_list', data)
+    .then(function(html, js) {
+        return templates.replaceNodeContents(entriesList, html, js);
+    })
+    .catch(notification.exception);
 };
 
 /**
@@ -102,14 +93,13 @@ export const reloadList = function(data, list) {
  * @param {string} selector - CSS selector for elements that trigger the confirmation dialog.
  */
 export const clickHandler = (selector) => {
-    const items = document.querySelectorAll(selector);
+    let items = document.querySelectorAll(selector);
 
-    // Attach click event listeners to each item.
     items.forEach((item) => {
-        item.addEventListener("click", (e) => {
+        item.addEventListener('click', (e) => {
             e.preventDefault();
-            const id = item.dataset.entryid;
-            const entriesList = item.closest('.entries_list');
+            let id = item.dataset.entryid;
+            let entriesList = item.closest('.entries_list');
             confirmDeletion(id, entriesList);
         });
     });
