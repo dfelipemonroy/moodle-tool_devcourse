@@ -28,16 +28,14 @@ defined('MOODLE_INTERNAL') || die();
 // External services for Tool Dev Course.
 $functions = [
     'tool_devcourse_delete_entry' => [
-        'classname' => \tool_devcourse\external::class,
-        'methodname' => 'delete_entry',
+        'classname' => '\tool_devcourse\external\delete_entry',
         'description' => 'Delete entry',
         'type' => 'write',
         'ajax' => true,
         'capabilities' => 'tool/devcourse:edit',
     ],
     'tool_devcourse_list_entries' => [
-        'classname' => \tool_devcourse\external::class,
-        'methodname' => 'list_entries',
+        'classname' => '\tool_devcourse\external\list_entries',
         'description' => 'List entries',
         'type' => 'read',
         'ajax' => true,
