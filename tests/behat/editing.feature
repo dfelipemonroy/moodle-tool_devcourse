@@ -2,7 +2,7 @@
 Feature: Creating, editing and deleting entries.
   In order to manage entries
   As a teacher
-  I need to be able to add, edit and delete entries
+  I need to be able to add, edit and delete entries.
 
   Background:
     Given the following "users" exist:
@@ -16,6 +16,13 @@ Feature: Creating, editing and deleting entries.
         | teacher1 | C1     | editingteacher |
     And the following config values are set as admin:
         | enabled  | 1      | tool_devcourse |
+
+  @javascript
+  Scenario: Plugin is not enabled.
+    When the following config values are set as admin:
+        | enabled  | 0      | tool_devcourse |
+    And I am on the "Course 1" course page logged in as teacher1
+    Then I should not see "Admin Tool Moodle Dev Course"
 
   @javascript
   Scenario: Add and edit an entry.
@@ -53,12 +60,3 @@ Feature: Creating, editing and deleting entries.
     And I click on "Delete" "link" in the "Test Entry" "table_row"
     And I press "Yes"
     Then I should not see "Test Entry"
-
-  @javascript
-  Scenario: Plugin is not enabled.
-    Given the following config values are set as admin:
-        | enabled  | 0      | tool_devcourse |
-    When I am on the "Course 1" course page logged in as teacher1
-    And I navigate to "Admin Tool Moodle Dev Course" in current page administration
-    Then I should not see "New entry"
-    And I should see "The Tool Dev Course functionality is disabled, please contact your administrator."

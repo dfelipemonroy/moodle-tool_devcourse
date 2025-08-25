@@ -54,7 +54,7 @@ class backup_tool_devcourse_plugin extends backup_tool_plugin {
         $plugin->add_child($pluginwrapper);
 
         $pluginentry = new backup_nested_element('entry', ['id'], [
-            'courseid', 'name', 'completed', 'priority', 'timecreated', 'timemodified', 'description', 'descriptionformat',
+            'courseid', 'name', 'completed', 'priority', 'description', 'descriptionformat', 'timecreated', 'timemodified',
         ]);
         $pluginwrapper->add_child($pluginentry);
 

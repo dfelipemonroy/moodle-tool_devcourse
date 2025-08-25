@@ -22,6 +22,9 @@
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use core\oauth2\rest;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/backup/moodle2/restore_tool_plugin.class.php');
@@ -41,7 +44,7 @@ class restore_tool_devcourse_plugin extends restore_tool_plugin {
      * This method specifies the XML paths and data structure required to restore
      * the plugin's data during the course restore process.
      *
-     * @return void
+     * @return restore_path_element[] An array of restore_path_element objects.
      */
     protected function define_course_plugin_structure() {
         $paths = [
