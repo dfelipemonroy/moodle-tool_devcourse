@@ -76,7 +76,7 @@ class entries_list implements \templatable, \renderable {
 
         // Display table.
         ob_start();
-        $table = new tool_devcourse_table($this->pluginname, $this->courseid);
+        $table = new \tool_devcourse\table($this->pluginname, $this->courseid);
         $table->out(20, false);
         $data['contents'] = ob_get_clean();
 

@@ -29,7 +29,7 @@ $id = required_param('id', PARAM_INT);
 require_sesskey();
 
 // Retrieve the entry.
-$entry = \tool_devcourse_api::retrieve($id, 0, MUST_EXIST);
+$entry = \tool_devcourse\api::retrieve($id, 0, MUST_EXIST);
 $courseid = $entry->courseid;
 $params = ['id' => $id];
 $contextcourse = \context_course::instance($courseid);
@@ -44,5 +44,5 @@ $PAGE->set_url($url);
 $PAGE->set_context($contextcourse);
 
 // Delete the entry.
-\tool_devcourse_api::delete($id);
+\tool_devcourse\api::delete($id);
 redirect($returnurl);

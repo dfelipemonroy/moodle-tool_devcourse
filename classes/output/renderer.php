@@ -15,13 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class tool_devcourse_renderer.
+ * Class renderer.
  *
  * @package    tool_devcourse
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_devcourse\output;
+
+use plugin_renderer_base;
 use tool_devcourse\output\entries_list;
 
 /**
@@ -34,7 +37,7 @@ use tool_devcourse\output\entries_list;
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_devcourse_renderer extends plugin_renderer_base {
+class renderer extends plugin_renderer_base {
 
     /**
      * Renders the list of entries.

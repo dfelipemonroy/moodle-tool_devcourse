@@ -40,11 +40,11 @@ $PAGE->set_heading(get_string('pluginname', $pluginname));
 // Delete entry if requested.
 if ($deleteid = optional_param('delete', null, PARAM_INT)) {
     require_sesskey();
-    $record = tool_devcourse_api::retrieve($deleteid, $courseid);
+    $record = \tool_devcourse\api::retrieve($deleteid, $courseid);
     require_capability('tool/devcourse:edit', $PAGE->context);
-    tool_devcourse_api::delete($record->id);
+    \tool_devcourse\api::delete($record->id);
 
-    redirect(new moodle_url('/admin/tool/devcourse/index.php', ['id' => $courseid]));
+    redirect(new \moodle_url('/admin/tool/devcourse/index.php', ['id' => $courseid]));
 }
 
 $outputpage = new \tool_devcourse\output\entries_list($courseid);

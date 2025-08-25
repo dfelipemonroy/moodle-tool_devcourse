@@ -64,7 +64,11 @@ function tool_devcourse_pluginfile($course, $cm, $context, $filearea, $args, $fo
         return false;
     }
 
-    if ($filearea !== 'entry') {
+    $fileareas = ['entry'];
+    if (empty($fileareas)) {
+        return false;
+    }
+    if (!in_array($filearea, $fileareas)) {
         return false;
     }
 
@@ -73,7 +77,7 @@ function tool_devcourse_pluginfile($course, $cm, $context, $filearea, $args, $fo
 
     $itemid = array_shift($args);
 
-    $entry = tool_devcourse_api::retrieve($itemid);
+    $entry = \tool_devcourse\api::retrieve($itemid);
 
     $filename = array_pop($args);
 

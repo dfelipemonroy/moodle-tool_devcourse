@@ -65,7 +65,7 @@ final class events_test extends \advanced_testcase {
 
         // Trigger Event.
         $sink = $this->redirectEvents();
-        $entryid = \tool_devcourse_api::insert((object) [
+        $entryid = \tool_devcourse\api::insert((object) [
             'courseid'  => $course->id,
             'name' => 'Test entry',
             'completed' => 0,
@@ -92,7 +92,7 @@ final class events_test extends \advanced_testcase {
     public function test_entry_updated(): void {
         $course = $this->getDataGenerator()->create_course();
 
-        $entryid = \tool_devcourse_api::insert((object) [
+        $entryid = \tool_devcourse\api::insert((object) [
             'courseid'  => $course->id,
             'name' => 'Test entry',
             'completed' => 0,
@@ -101,13 +101,13 @@ final class events_test extends \advanced_testcase {
         ]);
 
         // Retrieve the full record to get all required fields.
-        $entry = \tool_devcourse_api::retrieve($entryid);
+        $entry = \tool_devcourse\api::retrieve($entryid);
 
         // Trigger Event.
         $sink = $this->redirectEvents();
 
         // We perform the update.
-        \tool_devcourse_api::update((object) [
+        \tool_devcourse\api::update((object) [
             'id' => $entryid,
             'courseid' => $entry->courseid,
             'name' => 'Test entry 2',
@@ -137,7 +137,7 @@ final class events_test extends \advanced_testcase {
      */
     public function test_entry_deleted(): void {
         $course = $this->getDataGenerator()->create_course();
-        $entryid = \tool_devcourse_api::insert((object) [
+        $entryid = \tool_devcourse\api::insert((object) [
             'courseid'  => $course->id,
             'name' => 'Test entry',
             'completed' => 0,
@@ -147,7 +147,7 @@ final class events_test extends \advanced_testcase {
 
         // Trigger Event.
         $sink = $this->redirectEvents();
-        \tool_devcourse_api::delete($entryid);
+        \tool_devcourse\api::delete($entryid);
         $events = $sink->get_events();
         $this->assertCount(1, $events);
         $event = reset($events);

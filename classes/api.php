@@ -15,25 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class tool_devcourse_api.
+ * Class api.
  *
  * @package    tool_devcourse
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace tool_devcourse;
+use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
 /**
- * Class tool_devcourse_api for various api methods.
+ * Class api for various api methods.
  *
  * @package    tool_devcourse
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_devcourse_api {
+class api {
 
     /**
      * The name of the database table used by this class.
@@ -61,7 +64,7 @@ class tool_devcourse_api {
     public static function retrieve(int $id, int $courseid = 0, int $strictness = MUST_EXIST) {
         global $DB;
 
-        $cache = cache::make(self::$pluginname, 'entry');
+        $cache = \cache::make(self::$pluginname, 'entry');
         $entry = null;
         if (!$entry = $cache->get($id)) {
             $params = ['id' => $id];
@@ -105,13 +108,13 @@ class tool_devcourse_api {
         $updatedata['timemodified'] = time();
         $DB->update_record(self::$table, $updatedata);
 
-        $cache = cache::make(self::$pluginname, 'entry');
+        $cache = \cache::make(self::$pluginname, 'entry');
         $cache->set($data->id, $data);
 
         // We need to trigger an event for the updated entry.
         $entry = self::retrieve($data->id);
         $event = \tool_devcourse\event\entry_updated::create([
-            'context' => context_course::instance($entry->courseid),
+            'context' => \context_course::instance($entry->courseid),
             'objectid' => $entry->id,
         ]);
         $event->trigger();
@@ -130,7 +133,7 @@ class tool_devcourse_api {
             throw new \coding_exception('Object data must contain property courseid');
         }
 
-        $context = context_course::instance($data->courseid);
+        $context = \context_course::instance($data->courseid);
 
         $insertdata = array_intersect_key((array) $data, [
             'courseid' => 1,
@@ -187,12 +190,12 @@ class tool_devcourse_api {
         }
         $DB->delete_records(self::$table, ['id' => $id]);
 
-        $cache = cache::make(self::$pluginname, 'entry');
+        $cache = \cache::make(self::$pluginname, 'entry');
         $cache->delete($id);
 
         // We need to trigger an event for the deleted entry.
         $event = \tool_devcourse\event\entry_deleted::create([
-            'context' => context_course::instance($entry->courseid),
+            'context' => \context_course::instance($entry->courseid),
             'objectid' => $entry->id,
         ]);
         $event->trigger();

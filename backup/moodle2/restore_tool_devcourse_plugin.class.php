@@ -64,7 +64,7 @@ class restore_tool_devcourse_plugin extends restore_tool_plugin {
         $courseid       = $this->task->get_courseid();
         $data->courseid = $courseid;
 
-        \tool_devcourse_api::insert((object) $data);
+        \tool_devcourse\api::insert((object) $data);
     }
 
 }

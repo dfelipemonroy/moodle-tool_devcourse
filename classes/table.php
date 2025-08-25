@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_devcourse;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -34,7 +36,7 @@ require_once($CFG->libdir.'/tablelib.php');
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_devcourse_table extends table_sql {
+class table extends \table_sql {
 
     /** @var context_course */
     protected $context;
@@ -73,7 +75,7 @@ class tool_devcourse_table extends table_sql {
         ];
 
         // Set the context for the table.
-        $this->context = context_course::instance($courseid);
+        $this->context = \context_course::instance($courseid);
         if (has_capability('tool/devcourse:edit', $this->context)) {
             $columns[] = 'edit';
             $headers[] = '';
@@ -142,7 +144,7 @@ class tool_devcourse_table extends table_sql {
     protected function col_description($row) {
         global $PAGE;
 
-        $options = tool_devcourse_api::editor_options();
+        $options = api::editor_options();
         $description = file_rewrite_pluginfile_urls(
             $row->description,
             'pluginfile.php',
@@ -184,18 +186,18 @@ class tool_devcourse_table extends table_sql {
      */
     protected function col_edit($row) {
         $output = '';
-        $editurl = new moodle_url('/admin/tool/devcourse/edit.php', ['id' => $row->id]);
-        $deleteurl = new moodle_url('/admin/tool/devcourse/index.php', [
+        $editurl = new \moodle_url('/admin/tool/devcourse/edit.php', ['id' => $row->id]);
+        $deleteurl = new \moodle_url('/admin/tool/devcourse/index.php', [
             'delete' => $row->id,
             'id' => $this->context->instanceid,
             'sesskey' => sesskey(),
         ]);
 
-        $output .= html_writer::link(
+        $output .= \html_writer::link(
             $editurl,
             get_string('edit') . '<br>'
         );
-        $output .= html_writer::link(
+        $output .= \html_writer::link(
             $deleteurl,
             get_string('delete'),
             [

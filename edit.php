@@ -30,7 +30,7 @@ $pluginname = 'tool_devcourse';
 
 if (!empty($id)) {
     // We are going to edit an entry.
-    $entry = tool_devcourse_api::retrieve($id);
+    $entry = \tool_devcourse\api::retrieve($id);
     $courseid = $entry->courseid;
     $urlparams = ['id' => $id];
     $title = get_string('newentry', $pluginname);
@@ -42,23 +42,23 @@ if (!empty($id)) {
     $title = get_string('editentry', $pluginname);
 }
 
-$url = new moodle_url('/admin/tool/devcourse/edit.php', $urlparams);
+$url = new \moodle_url('/admin/tool/devcourse/edit.php', $urlparams);
 $PAGE->set_url($url);
 
 require_login($courseid);
-$context = context_course::instance($courseid);
+$context = \context_course::instance($courseid);
 require_capability('tool/devcourse:edit', $context);
 
 $PAGE->set_title($title);
 $PAGE->set_heading(get_string('pluginname', $pluginname));
 
 // Load the form class.
-$form = new tool_devcourse_form();
+$form = new \tool_devcourse\form();
 if (!empty($entry->id)) {
     file_prepare_standard_editor(
         $entry,
         'description',
-        tool_devcourse_api::editor_options($courseid),
+        \tool_devcourse\api::editor_options($courseid),
         $PAGE->context,
         $pluginname,
         'entry',
@@ -67,16 +67,16 @@ if (!empty($entry->id)) {
 }
 $form->set_data($entry);
 
-$returnurl = new moodle_url('/admin/tool/devcourse/index.php', ['id' => $courseid]);
+$returnurl = new \moodle_url('/admin/tool/devcourse/index.php', ['id' => $courseid]);
 if ($form->is_cancelled()) {
     redirect($returnurl);
 } else if ($data = $form->get_data()) {
     if ($data->id) {
         // Edit entry.
-        tool_devcourse_api::update($data);
+        \tool_devcourse\api::update($data);
     } else {
         // Add entry.
-        tool_devcourse_api::insert($data);
+        \tool_devcourse\api::insert($data);
     }
     redirect($returnurl);
 }

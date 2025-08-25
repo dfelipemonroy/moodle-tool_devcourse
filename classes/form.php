@@ -15,25 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class tool_devcourse_form.
+ * Class form.
  *
  * @package    tool_devcourse
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace tool_devcourse;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
 /**
- * Class tool_devcourse_form for displaying an editing form.
+ * Class form for displaying an editing form.
  *
  * @package    tool_devcourse
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_devcourse_form extends moodleform {
+class form extends \moodleform {
 
     /**
      * The name of the plugin used within the tool_devcourse component.

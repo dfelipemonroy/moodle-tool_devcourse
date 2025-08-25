@@ -55,14 +55,14 @@ class delete_entry extends external_api {
         $params = self::validate_parameters(self::execute_parameters(), ['id' => $id]);
 
         // We retrieve the entry to be deleted.
-        $entry = \tool_devcourse_api::retrieve($params['id']);
+        $entry = \tool_devcourse\api::retrieve($params['id']);
 
         // Permission check.
         $context = \context_course::instance($entry->courseid);
         self::validate_context($context);
         require_capability('tool/devcourse:edit', $context);
 
-        \tool_devcourse_api::delete($params['id']);
+        \tool_devcourse\api::delete($params['id']);
 
         return ['status' => 'OK'];
     }
