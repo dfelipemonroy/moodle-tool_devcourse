@@ -23,8 +23,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use core\oauth2\rest;
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/backup/moodle2/restore_tool_plugin.class.php');

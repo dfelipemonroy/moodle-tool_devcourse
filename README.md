@@ -1,5 +1,6 @@
 # Admin Tool Moodle Dev Course #
-tool_devcourse is an example plugin to complete Moodle Development Course.
+Admin Tool Moodle Dev Course is an example plugin to complete Moodle Development Course.
+Developed by: Diego Monroy <diego.monroy@moodle.com>
 
 ## Installing via uploaded ZIP file ##
 
