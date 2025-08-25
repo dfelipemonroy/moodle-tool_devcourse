@@ -28,7 +28,7 @@ if ($hassiteconfig) {
     // Add the plugin settings to the local plugins category.
     $pluginname = 'tool_devcourse';
 
-    $ADMIN->add('root',
+    $ADMIN->add('tools',
         new admin_category(
                 "{$pluginname}_settings",
                 new \lang_string('pluginname', $pluginname)

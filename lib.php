@@ -33,13 +33,16 @@
 function tool_devcourse_extend_navigation_course($navigation, $course, $context) {
     $pluginname = 'tool_devcourse';
     if (has_capability('tool/devcourse:view', $context)) {
-        $navigation->add(
-            get_string('pluginname', $pluginname),
-            new moodle_url('/admin/tool/devcourse/index.php', ['id' => $course->id]),
-            navigation_node::TYPE_SETTING,
-            get_string('pluginname', $pluginname),
-            'devcourse',
-            new pix_icon('icon', '', $pluginname));
+        if (get_config($pluginname, 'enabled')) {
+            $navigation->add(
+                get_string('pluginname', $pluginname),
+                new moodle_url('/admin/tool/devcourse/index.php', ['id' => $course->id]),
+                navigation_node::TYPE_SETTING,
+                get_string('pluginname', $pluginname),
+                'devcourse',
+                new pix_icon('icon', '', $pluginname)
+            );
+        }
     }
 }
 
