@@ -58,7 +58,7 @@ if (!empty($entry->id)) {
     file_prepare_standard_editor(
         $entry,
         'description',
-        \tool_devcourse\api::editor_options($courseid),
+        \tool_devcourse\api::editor_options(),
         $PAGE->context,
         $pluginname,
         'entry',

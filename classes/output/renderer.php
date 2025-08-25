@@ -37,7 +37,7 @@ use tool_devcourse\output\entries_list;
  * @copyright  2025 Diego Monroy <diego.monroy@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends plugin_renderer_base {
+class renderer extends \plugin_renderer_base {
 
     /**
      * Renders the list of entries.

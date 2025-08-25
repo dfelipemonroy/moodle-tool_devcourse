@@ -17,7 +17,6 @@
 namespace tool_devcourse\external;
 
 use core_external\external_function_parameters;
-use core_external\external_single_structure;
 use core_external\external_api;
 use core_external\external_value;
 
@@ -48,7 +47,6 @@ class delete_entry extends external_api {
      * Deletes an entry with the specified ID.
      *
      * @param int $id The ID of the entry to delete.
-     * @return array An array containing the status of the deletion.
      */
     public static function execute(int $id) {
         // Validate parameters.
@@ -62,20 +60,17 @@ class delete_entry extends external_api {
         self::validate_context($context);
         require_capability('tool/devcourse:edit', $context);
 
+        // Delete the entry.
         \tool_devcourse\api::delete($params['id']);
-
-        return ['status' => 'OK'];
     }
 
     /**
-     * Returns description of method return value for delete_entry.
+     * Returns the structure of the data returned by the execute function.
      *
-     * @return external_single_structure
+     * @return null No data is needed to be returned.
      */
-    public static function execute_returns(): external_single_structure {
-        return new external_single_structure([
-            'status' => new external_value(PARAM_TEXT, 'Status message'),
-        ]);
+    public static function execute_returns() {
+        return null;
     }
 
 }
